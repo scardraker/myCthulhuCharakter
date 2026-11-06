@@ -1,0 +1,67 @@
+{
+  "charakter": {
+    "name": "Dr. Edmund Hartwell",
+    "spieler": "Max Mustermann",
+    "beruf": "Antiquar",
+    "alter": 42
+  },
+  "eigenschaften": {
+    "staerke": 50,
+    "geschicklichkeit": 60,
+    "konstitution": 55,
+    "charisma": 45,
+    "bildung": 80,
+    "intelligenz": 75,
+    "magie": 65
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Bibliotheksnutzung", "wert": 75 },
+      { "name": "Okkultismus", "wert": 60 },
+      { "name": "Geschichte", "wert": 70 }
+    ],
+    "sekundaer": [
+      { "name": "Latein", "wert": 40 },
+      { "name": "Psychologie", "wert": 35 },
+      { "name": "Überreden", "wert": 30 }
+    ],
+    "standard": [
+      { "name": "Horchen", "wert": 20 },
+      { "name": "Verborgen", "wert": 20 },
+      { "name": "Ausweichen", "wert": 30 },
+      { "name": "Entdecken", "wert": 25 }
+    ]
+  },
+  "freitext": {
+    "inventar": "Taschenlampe\nNotizbuch und Füllfederhalter\nTaschenuhr\nLupe",
+    "besitz": "Antiquariat in Arkham (Miskatonic Avenue)\nKleines Haus mit Bibliothek\nGespartes: 1.200 $",
+    "magie": "Kennt den Zauber „Elder Sign“.\nBesitzt eine Abschrift des Pnakotischen Manuskripts (unvollständig).",
+    "charaktereigenschaften": "Neugierig, penibel, leicht verschroben.\nGlaubt an das Rationale – bis jetzt.\nAlbträume seit der Expedition 1923."
+  },
+  "entwicklung": [
+    {
+      "abenteuer": "Das Haus an der Corbitt Street",
+      "datum": "Sitzung 1–3",
+      "verbesserungen": [
+        { "name": "Okkultismus", "von": 55, "auf": 60 },
+        { "name": "Horchen", "von": 15, "auf": 20 },
+        { "name": "Latein", "von": 35, "auf": 40, "notiz": "durch Studium" }
+      ],
+      "zauber": [
+        { "name": "Elder Sign", "notiz": "aus dem Tagebuch gelernt" }
+      ],
+      "besitz": [
+        "Silberner Dolch",
+        { "name": "Altes Tagebuch", "notiz": "Hinweis auf Innsmouth" }
+      ]
+    },
+    {
+      "abenteuer": "Die Expedition nach Innsmouth",
+      "datum": "Sitzung 4–6",
+      "verbesserungen": [
+        { "name": "Psychologie", "von": 30, "auf": 35 },
+        { "name": "Entdecken", "von": 20, "auf": 25 }
+      ]
+    }
+  ]
+}

@@ -34,7 +34,7 @@
     border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;
   }
 
-  input[type=text], input[type=number], input[type=password], textarea {
+  input[type=text], input[type=number], textarea {
     background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
     border-radius: 4px; padding: 3px 6px; font: inherit; font-size: .9rem; min-width: 0;
   }
@@ -46,15 +46,6 @@
   }
   button:hover, .btn:hover { border-color: var(--accent); }
   button.primary { border-color: var(--accent); }
-
-  /* Passwort */
-  #gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
-  #gate form {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
-    padding: 16px; width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 8px;
-  }
-  #gate input { width: 100%; padding: 6px 8px; }
-  #gateMsg { color: var(--danger); font-size: .8rem; min-height: 1.1em; }
 
   /* Kopfleiste */
   #bar { position: sticky; top: 0; z-index: 10; border-color: var(--accent-2); box-shadow: 0 4px 10px rgba(0,0,0,.5); }
@@ -100,16 +91,7 @@
 </head>
 <body>
 
-<div id="gate">
-  <form id="gateForm" autocomplete="off">
-    <div>Charakter-Editor</div>
-    <input type="password" id="pw" placeholder="Passwort" autofocus>
-    <button type="submit" class="primary">Öffnen</button>
-    <div id="gateMsg"></div>
-  </form>
-</div>
-
-<div id="app" class="hidden">
+<div id="app">
   <div class="wrap">
     <section id="bar">
       <div class="barrow">
@@ -141,69 +123,7 @@
 </div>
 
 <script>
-/* ---------- Passwortschutz (nur clientseitig, siehe Hinweis in der Antwort) ---------- */
-const PW_HASH = "4bbeeb087a5c28f9213791d17b989be0dfbc26522404cb32fd073ec9a80496fa"; /* SHA-256 */
-
-function sha256(s) {
-  const b = new TextEncoder().encode(s), l = b.length;
-  const rotr = (x, n) => (x >>> n) | (x << (32 - n));
-  const K = [], H = [];
-  for (let p = 2, n = 0; n < 64; p++) {
-    let prime = true;
-    for (let d = 2; d * d <= p; d++) if (p % d === 0) { prime = false; break; }
-    if (!prime) continue;
-    if (n < 8) H[n] = Math.floor((Math.sqrt(p) % 1) * 2 ** 32);
-    K[n++] = Math.floor((Math.cbrt(p) % 1) * 2 ** 32);
-  }
-  const nl = ((l + 9 + 63) >> 6) << 6;
-  const buf = new Uint8Array(nl);
-  buf.set(b); buf[l] = 0x80;
-  const view = new DataView(buf.buffer);
-  view.setUint32(nl - 4, (l * 8) >>> 0);
-  view.setUint32(nl - 8, Math.floor((l * 8) / 2 ** 32));
-  const w = new Array(64);
-  for (let off = 0; off < nl; off += 64) {
-    for (let i = 0; i < 16; i++) w[i] = view.getUint32(off + 4 * i);
-    for (let i = 16; i < 64; i++) {
-      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
-      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
-      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
-    }
-    let [a, bb, c, d, e, f, g, h] = H;
-    for (let i = 0; i < 64; i++) {
-      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
-      const ch = (e & f) ^ (~e & g);
-      const t1 = (h + S1 + ch + K[i] + w[i]) | 0;
-      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
-      const mj = (a & bb) ^ (a & c) ^ (bb & c);
-      const t2 = (S0 + mj) | 0;
-      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = bb; bb = a; a = (t1 + t2) | 0;
-    }
-    const v = [a, bb, c, d, e, f, g, h];
-    for (let i = 0; i < 8; i++) H[i] = (H[i] + v[i]) | 0;
-  }
-  return H.map(x => (x >>> 0).toString(16).padStart(8, "0")).join("");
-}
-
 const $ = (id) => document.getElementById(id);
-
-function entsperren() {
-  $("gate").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  init();
-}
-
-$("gateForm").addEventListener("submit", (ev) => {
-  ev.preventDefault();
-  if (sha256($("pw").value) === PW_HASH) {
-    try { sessionStorage.setItem("coc_edit_ok", "1"); } catch (_) {}
-    entsperren();
-  } else {
-    $("gateMsg").textContent = "Falsches Passwort.";
-    $("pw").value = "";
-    $("pw").focus();
-  }
-});
 
 /* ---------- Datenmodell ---------- */
 const EIG = [
@@ -533,20 +453,32 @@ function fuelleListe() {
 
 /* Versucht, ein Verzeichnislisting des Servers (autoindex) auszulesen */
 async function verzeichnis() {
-  try {
-    const base = new URL("./", location.href);
-    const res = await fetch(base.href, { cache: "no-store" });
-    if (!res.ok || !(res.headers.get("content-type") || "").includes("html")) return;
-    const doc = new DOMParser().parseFromString(await res.text(), "text/html");
-    doc.querySelectorAll("a[href]").forEach(a => {
-      let u;
-      try { u = new URL(a.getAttribute("href"), base); } catch (_) { return; }
-      if (u.origin !== base.origin || !u.pathname.startsWith(base.pathname) || !/\.json$/i.test(u.pathname)) return;
-      const rel = decodeURIComponent(u.pathname.slice(base.pathname.length));
-      if (rel && !rel.includes("/")) bekannt.add(rel);
-    });
-    fuelleListe();
-  } catch (_) {}
+  /* Aktuelles Verzeichnis und Unterordner „charakter“ */
+  for (const ordner of ["", UNTERORDNER + "/"]) {
+    try {
+      const base = new URL("./" + ordner, location.href);
+      const res = await fetch(base.href, { cache: "no-store" });
+      if (!res.ok || !(res.headers.get("content-type") || "").includes("html")) continue;
+      const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+      doc.querySelectorAll("a[href]").forEach(a => {
+        let u;
+        try { u = new URL(a.getAttribute("href"), base); } catch (_) { return; }
+        if (u.origin !== base.origin || !u.pathname.startsWith(base.pathname) || !/\.json$/i.test(u.pathname)) return;
+        const rel = decodeURIComponent(u.pathname.slice(base.pathname.length));
+        if (rel && !rel.includes("/")) bekannt.add(ordner + rel);
+      });
+    } catch (_) {}
+  }
+  fuelleListe();
+}
+
+/* Relative Pfade werden zuerst wie angegeben, dann im Unterordner „charakter“ gesucht */
+const UNTERORDNER = "charakter";
+function kandidaten(name) {
+  if (/^[a-z][a-z0-9+.-]*:/i.test(name) || name.startsWith("/")) return [name];
+  const rel = name.replace(/^\.\//, "");
+  if (rel.startsWith(UNTERORDNER + "/")) return [rel];
+  return [name, UNTERORDNER + "/" + rel];
 }
 
 async function ladeDatei(name) {
@@ -555,11 +487,28 @@ async function ladeDatei(name) {
   if (dirty && !confirm("Ungespeicherte Änderungen verwerfen?")) return;
   msg("Lade …");
   try {
-    const res = await fetch(name, { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    setData(await res.json(), name);
-    merkeName(name);
-    msg("Geladen: " + name);
+    let json, gefunden, ersterFehler;
+    for (const url of kandidaten(name)) {
+      let res;
+      try {
+        res = await fetch(url, { cache: "no-store" });
+      } catch (e) {
+        ersterFehler = ersterFehler || e;
+        continue;
+      }
+      if (!res.ok) {
+        ersterFehler = ersterFehler || new Error("HTTP " + res.status);
+        continue;
+      }
+      json = await res.json(); /* gefunden, aber kein gültiges JSON -> Fehler */
+      gefunden = url;
+      break;
+    }
+    if (gefunden === undefined) throw ersterFehler || new Error("nicht gefunden");
+    setData(json, gefunden);
+    $("fname").value = gefunden;
+    merkeName(gefunden);
+    msg("Geladen: " + gefunden);
   } catch (e) {
     msg("Laden fehlgeschlagen (" + e.message + ").", true);
   }
@@ -583,7 +532,7 @@ function herunterladen() {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   setDirty(false);
-  msg(`„${fn}“ heruntergeladen – jetzt auf dem Server im selben Verzeichnis ersetzen.`);
+  msg(`„${fn}“ heruntergeladen – jetzt am Ablageort „${aktName}“ ersetzen.`);
 }
 
 function kopieren() {
@@ -673,7 +622,7 @@ function init() {
   ladeDatei($("fname").value);
 }
 
-try { if (sessionStorage.getItem("coc_edit_ok") === "1") entsperren(); } catch (_) {}
+init();
 </script>
 </body>
 </html>

@@ -436,7 +436,6 @@ $("sort").addEventListener("click", (ev) => {
   try { localStorage.setItem("coc_sort", mode); } catch (_) {}
   sortButtonsMarkieren();
   if (aktuelleDaten) {
-    renderStats(pick(aktuelleDaten, { key: "eigenschaften", alt: ["attribute"] }) || {});
     renderSkills(pick(aktuelleDaten, { key: "fertigkeiten", alt: ["skills"] }) || {});
   }
 });
@@ -445,10 +444,8 @@ sortButtonsMarkieren();
 function renderStats(e) {
   const box = $("stats");
   box.replaceChildren();
-  const eintraege = sortiere(
-    EIGENSCHAFTEN.map(def => ({ def, v: num(pick(e, def)) })),
-    x => x.def.label, x => x.v);
-  for (const { def, v } of eintraege) {
+  for (const def of EIGENSCHAFTEN) {
+    const v = num(pick(e, def));
     const b = el("button", "roll-btn stat");
     b.type = "button";
     b.title = def.label;
