@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Charakter-Editor</title>
+<style>
+  :root {
+    --bg: #14110f;
+    --panel: #1e1915;
+    --panel-2: #26201a;
+    --border: #3d3228;
+    --text: #e8dfd0;
+    --muted: #9a8c78;
+    --accent: #7fa37a;
+    --accent-2: #b8863b;
+    --danger: #c0594a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Georgia, "Times New Roman", serif; font-size: 15px; line-height: 1.35;
+  }
+  .hidden { display: none !important; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 10px 10px 40px; }
+  h2 {
+    font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent-2); margin: 0 0 6px; padding-bottom: 3px;
+    border-bottom: 1px solid var(--border); font-weight: normal;
+  }
+  section {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;
+  }
+
+  input[type=text], input[type=number], input[type=password], textarea {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 4px; padding: 3px 6px; font: inherit; font-size: .9rem; min-width: 0;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { width: 100%; resize: vertical; }
+  button, .btn {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 4px; padding: 4px 11px; font: inherit; font-size: .85rem; cursor: pointer;
+  }
+  button:hover, .btn:hover { border-color: var(--accent); }
+  button.primary { border-color: var(--accent); }
+
+  /* Passwort */
+  #gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #gate form {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    padding: 16px; width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 8px;
+  }
+  #gate input { width: 100%; padding: 6px 8px; }
+  #gateMsg { color: var(--danger); font-size: .8rem; min-height: 1.1em; }
+
+  /* Kopfleiste */
+  #bar { position: sticky; top: 0; z-index: 10; border-color: var(--accent-2); box-shadow: 0 4px 10px rgba(0,0,0,.5); }
+  .barrow { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  #fname { flex: 1 1 180px; padding: 4px 8px; }
+  .grow-sp { flex: 1 1 0; }
+  .dirty { color: var(--accent-2); font-size: .8rem; }
+  .hint { font-size: .75rem; color: var(--muted); min-height: 1.1em; margin-top: 3px; }
+  .hint.error { color: var(--danger); }
+
+  .tabs { display: flex; gap: 0; margin-bottom: 8px; }
+  .tabs button { border-radius: 0; color: var(--muted); }
+  .tabs button:first-child { border-radius: 5px 0 0 5px; }
+  .tabs button:last-child { border-radius: 0 5px 5px 0; border-left: 0; }
+  .tabs button.active { color: var(--text); background: #362e24; border-color: var(--accent); }
+
+  /* Formularelemente */
+  .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 8px; }
+  .grid7 { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 6px 8px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 8px; margin-bottom: 8px; }
+  .cols section { margin-bottom: 0; }
+  .f label { display: block; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .f input { width: 100%; }
+
+  .row { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 4px; }
+  .row > .fields, .row > .card { flex: 1 1 auto; min-width: 0; }
+  .fields { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fields > .f { flex: 1 1 160px; }
+  .fields > input { flex: 0 0 4.6rem; width: 4.6rem; }
+  .fields > input.grow { flex: 1 1 120px; width: auto; }
+  .fields > input.grow2 { flex: 2 1 140px; width: auto; }
+  .ctl { display: flex; gap: 2px; flex: 0 0 auto; }
+  .ctl button { padding: 2px 6px; font-size: .78rem; color: var(--muted); }
+  .ctl button:hover { color: var(--text); }
+  .ctl button.del:hover { color: var(--danger); border-color: var(--danger); }
+  .add { font-size: .78rem; color: var(--muted); padding: 2px 9px; }
+  .card { border: 1px solid var(--border); border-radius: 5px; padding: 6px; background: var(--panel-2); }
+  .card input[type=text], .card input[type=number] { background: var(--panel); }
+  .sub { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-2); margin: 8px 0 3px; }
+
+  #raw { height: 60vh; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .8rem; white-space: pre; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <form id="gateForm" autocomplete="off">
+    <div>Charakter-Editor</div>
+    <input type="password" id="pw" placeholder="Passwort" autofocus>
+    <button type="submit" class="primary">Öffnen</button>
+    <div id="gateMsg"></div>
+  </form>
+</div>
+
+<div id="app" class="hidden">
+  <div class="wrap">
+    <section id="bar">
+      <div class="barrow">
+        <input type="text" id="fname" list="files" value="charakter.json" placeholder="Dateiname, z. B. charakter.json" spellcheck="false">
+        <datalist id="files"></datalist>
+        <button type="button" id="btnLoad">Laden</button>
+        <label class="btn">Lokale Datei …<input type="file" id="pick" accept=".json,application/json" hidden></label>
+        <button type="button" id="btnNew">Neu</button>
+        <span class="grow-sp"></span>
+        <span id="dirty" class="dirty hidden">● nicht gespeichert</span>
+        <button type="button" id="btnCopy">Kopieren</button>
+        <button type="button" id="btnSave" class="primary">Herunterladen</button>
+      </div>
+      <div id="msg" class="hint"></div>
+    </section>
+
+    <div class="tabs">
+      <button type="button" data-tab="form" class="active">Formular</button>
+      <button type="button" data-tab="raw">JSON</button>
+    </div>
+
+    <div id="form"></div>
+
+    <div id="rawBox" class="hidden">
+      <textarea id="raw" spellcheck="false"></textarea>
+      <div style="margin-top:6px"><button type="button" id="btnApply">Übernehmen</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Passwortschutz (nur clientseitig, siehe Hinweis in der Antwort) ---------- */
+const PW_HASH = "4bbeeb087a5c28f9213791d17b989be0dfbc26522404cb32fd073ec9a80496fa"; /* SHA-256 */
+
+function sha256(s) {
+  const b = new TextEncoder().encode(s), l = b.length;
+  const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+  const K = [], H = [];
+  for (let p = 2, n = 0; n < 64; p++) {
+    let prime = true;
+    for (let d = 2; d * d <= p; d++) if (p % d === 0) { prime = false; break; }
+    if (!prime) continue;
+    if (n < 8) H[n] = Math.floor((Math.sqrt(p) % 1) * 2 ** 32);
+    K[n++] = Math.floor((Math.cbrt(p) % 1) * 2 ** 32);
+  }
+  const nl = ((l + 9 + 63) >> 6) << 6;
+  const buf = new Uint8Array(nl);
+  buf.set(b); buf[l] = 0x80;
+  const view = new DataView(buf.buffer);
+  view.setUint32(nl - 4, (l * 8) >>> 0);
+  view.setUint32(nl - 8, Math.floor((l * 8) / 2 ** 32));
+  const w = new Array(64);
+  for (let off = 0; off < nl; off += 64) {
+    for (let i = 0; i < 16; i++) w[i] = view.getUint32(off + 4 * i);
+    for (let i = 16; i < 64; i++) {
+      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+    }
+    let [a, bb, c, d, e, f, g, h] = H;
+    for (let i = 0; i < 64; i++) {
+      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      const ch = (e & f) ^ (~e & g);
+      const t1 = (h + S1 + ch + K[i] + w[i]) | 0;
+      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      const mj = (a & bb) ^ (a & c) ^ (bb & c);
+      const t2 = (S0 + mj) | 0;
+      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = bb; bb = a; a = (t1 + t2) | 0;
+    }
+    const v = [a, bb, c, d, e, f, g, h];
+    for (let i = 0; i < 8; i++) H[i] = (H[i] + v[i]) | 0;
+  }
+  return H.map(x => (x >>> 0).toString(16).padStart(8, "0")).join("");
+}
+
+const $ = (id) => document.getElementById(id);
+
+function entsperren() {
+  $("gate").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  init();
+}
+
+$("gateForm").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  if (sha256($("pw").value) === PW_HASH) {
+    try { sessionStorage.setItem("coc_edit_ok", "1"); } catch (_) {}
+    entsperren();
+  } else {
+    $("gateMsg").textContent = "Falsches Passwort.";
+    $("pw").value = "";
+    $("pw").focus();
+  }
+});
+
+/* ---------- Datenmodell ---------- */
+const EIG = [
+  ["staerke", "Stärke", ["stärke", "str"]],
+  ["geschicklichkeit", "Geschicklichkeit", ["dex", "ges"]],
+  ["konstitution", "Konstitution", ["con", "kon"]],
+  ["charisma", "Charisma", ["app"]],
+  ["bildung", "Bildung", ["edu"]],
+  ["intelligenz", "Intelligenz", ["int"]],
+  ["magie", "Magie", ["pow", "mp"]]
+];
+const KAT = [
+  ["primaer", "Primär", ["primär", "primary"]],
+  ["sekundaer", "Sekundär", ["sekundär", "secondary"]],
+  ["standard", "Standard", ["default"]]
+];
+const FREI = [
+  ["inventar", "Inventar", []],
+  ["besitz", "Besitz", []],
+  ["magie", "Magie", []],
+  ["charaktereigenschaften", "Charaktereigenschaften", ["eigenschaften"]]
+];
+
+let data = leer();
+let dirty = false;
+let aktName = "charakter.json";
+let tab = "form";
+let lastDump = "";
+
+function leer() {
+  return {
+    charakter: { name: "", spieler: "", beruf: "" },
+    eigenschaften: {},
+    fertigkeiten: { primaer: [], sekundaer: [], standard: [] },
+    freitext: { inventar: "", besitz: "", magie: "", charaktereigenschaften: "" },
+    entwicklung: []
+  };
+}
+
+/* Liest den ersten vorhandenen Schlüssel (Priorität = Reihenfolge von keys,
+   Vergleich kleingeschrieben) und entfernt alle Varianten aus obj. */
+function take(obj, keys) {
+  let val;
+  for (const k of keys) {
+    const hit = Object.keys(obj).find(o => o.toLowerCase() === k);
+    if (hit !== undefined && val === undefined) val = obj[hit];
+  }
+  for (const o of Object.keys(obj)) if (keys.includes(o.toLowerCase())) delete obj[o];
+  return val;
+}
+const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+const obj = (v) => isObj(v) ? { ...v } : {};
+const listOf = (v) => Array.isArray(v) ? v : (typeof v === "string" && v ? [v] : []);
+const nz = (v) => (v !== "" && v !== null && Number.isFinite(Number(v))) ? Number(v) : v;
+
+function skills(v) {
+  return listOf(v).map(it => {
+    if (!isObj(it)) return { name: String(it) };
+    const o = { ...it };
+    const r = { name: take(o, ["name"]) ?? "" };
+    const w = take(o, ["wert", "value"]);
+    const nt = take(o, ["notiz", "note"]);
+    if (w !== undefined) r.wert = nz(w);
+    if (nt !== undefined) r.notiz = nt;
+    return { ...r, ...o };
+  });
+}
+function improvements(v) {
+  return listOf(v).map(it => {
+    if (!isObj(it)) return { name: String(it) };
+    const o = { ...it };
+    const r = { name: take(o, ["name"]) ?? "" };
+    const von = take(o, ["von", "alt"]), auf = take(o, ["auf", "neu"]), nt = take(o, ["notiz", "note"]);
+    if (von !== undefined) r.von = nz(von);
+    if (auf !== undefined) r.auf = nz(auf);
+    if (nt !== undefined) r.notiz = nt;
+    return { ...r, ...o };
+  });
+}
+function named(v) {
+  return listOf(v).map(it => {
+    if (!isObj(it)) return { name: String(it) };
+    const o = { ...it };
+    const r = { name: take(o, ["name"]) ?? "" };
+    const nt = take(o, ["notiz", "note"]);
+    if (nt !== undefined) r.notiz = nt;
+    return { ...r, ...o };
+  });
+}
+
+/* Bringt beliebige (auch vom Viewer tolerierte) Schreibweisen in die kanonische Form */
+function normalize(raw) {
+  const src = isObj(raw) ? { ...raw } : {};
+  const out = {};
+
+  const cc = obj(take(src, ["charakter", "character"]));
+  const ch = { name: take(cc, ["name"]) ?? "", spieler: take(cc, ["spieler"]) ?? "", beruf: take(cc, ["beruf"]) ?? "" };
+  const al = take(cc, ["alter", "age"]);
+  if (al !== undefined) ch.alter = nz(al);
+  out.charakter = { ...ch, ...cc };
+
+  const ee = obj(take(src, ["eigenschaften", "attribute"]));
+  const eig = {};
+  for (const [k, , alts] of EIG) {
+    const v = take(ee, [k, ...alts]);
+    if (v !== undefined) eig[k] = nz(v);
+  }
+  out.eigenschaften = { ...eig, ...ee };
+
+  const ff = obj(take(src, ["fertigkeiten", "skills"]));
+  const fert = {};
+  for (const [k, , alts] of KAT) {
+    let v = take(ff, [k, ...alts]);
+    if (isObj(v)) v = Object.entries(v).map(([name, wert]) => isObj(wert) ? { name, ...wert } : { name, wert });
+    fert[k] = skills(v);
+  }
+  out.fertigkeiten = { ...fert, ...ff };
+
+  const tt = obj(take(src, ["freitext", "texte"]));
+  const fr = {};
+  for (const [k, , alts] of FREI) {
+    let v = take(tt, [k, ...alts]);
+    if (Array.isArray(v)) v = v.join("\n");
+    fr[k] = v === undefined || v === null ? "" : String(v);
+  }
+  out.freitext = { ...fr, ...tt };
+
+  const ent = take(src, ["entwicklung", "development", "fortschritt"]);
+  out.entwicklung = listOf(ent).map(a => {
+    if (!isObj(a)) return { abenteuer: String(a), verbesserungen: [], zauber: [], besitz: [] };
+    const o = { ...a };
+    const r = {
+      abenteuer: take(o, ["abenteuer", "name", "titel"]) ?? "",
+    };
+    const dat = take(o, ["datum", "date"]);
+    if (dat !== undefined) r.datum = dat;
+    r.verbesserungen = improvements(take(o, ["verbesserungen", "skills", "fertigkeiten"]));
+    r.zauber = named(take(o, ["zauber", "spells"]));
+    r.besitz = named(take(o, ["besitz", "items"]));
+    return { ...r, ...o };
+  });
+
+  return Object.assign(out, src); /* unbekannte Felder bleiben erhalten */
+}
+
+/* ---------- UI-Helfer ---------- */
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined && text !== null) e.textContent = String(text);
+  return e;
+}
+
+function setDirty(v) {
+  dirty = v;
+  $("dirty").classList.toggle("hidden", !v);
+}
+const markDirty = () => setDirty(true);
+
+function msg(text, isErr) {
+  const m = $("msg");
+  m.textContent = text || "";
+  m.className = "hint" + (isErr ? " error" : "");
+}
+
+function btn(text, fn, cls) {
+  const b = el("button", cls, text);
+  b.type = "button";
+  b.addEventListener("click", fn);
+  return b;
+}
+
+/* Textfeld; opt = leeren Wert aus dem JSON entfernen */
+function txt(o, key, ph, cls, opt) {
+  const i = el("input", cls);
+  i.type = "text";
+  i.placeholder = ph || "";
+  i.value = o[key] ?? "";
+  i.addEventListener("input", () => {
+    if (opt && i.value === "") delete o[key]; else o[key] = i.value;
+    markDirty();
+  });
+  return i;
+}
+
+function numIn(o, key, ph, cls) {
+  const i = el("input", cls);
+  i.type = "number";
+  i.placeholder = ph || "";
+  i.value = o[key] ?? "";
+  i.addEventListener("input", () => {
+    if (i.value === "") delete o[key]; else o[key] = Number(i.value);
+    markDirty();
+  });
+  return i;
+}
+
+function area(o, key, rows) {
+  const t = el("textarea");
+  t.rows = rows || 4;
+  t.value = o[key] ?? "";
+  t.addEventListener("input", () => { o[key] = t.value; markDirty(); });
+  return t;
+}
+
+function field(label, input) {
+  const d = el("div", "f");
+  d.append(el("label", null, label), input);
+  return d;
+}
+
+function sec(title, ...kids) {
+  const s = el("section");
+  s.append(el("h2", null, title), ...kids);
+  return s;
+}
+
+/* Liste mit Hinzufügen / Verschieben / Löschen. arr wird direkt verändert. */
+function listEditor(arr, rowFn, newFn, addLabel) {
+  const box = el("div");
+  function draw() {
+    box.replaceChildren();
+    arr.forEach((item, i) => {
+      const row = el("div", "row");
+      row.append(rowFn(item, i));
+      const ctl = el("div", "ctl");
+      const move = (d) => {
+        const j = i + d;
+        if (j < 0 || j >= arr.length) return;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        markDirty(); draw();
+      };
+      ctl.append(
+        btn("↑", () => move(-1)),
+        btn("↓", () => move(1)),
+        btn("✕", () => { arr.splice(i, 1); markDirty(); draw(); }, "del")
+      );
+      row.append(ctl);
+      box.append(row);
+    });
+    box.append(btn("+ " + addLabel, () => { arr.push(newFn()); markDirty(); draw(); }, "add"));
+  }
+  draw();
+  return box;
+}
+
+/* ---------- Formular aufbauen ---------- */
+function namedRow(it) {
+  const w = el("div", "fields");
+  w.append(txt(it, "name", "Name", "grow2"), txt(it, "notiz", "Notiz", "grow", true));
+  return w;
+}
+
+function buildForm() {
+  const f = $("form");
+  f.replaceChildren();
+
+  const ch = data.charakter;
+  const g = el("div", "grid4");
+  g.append(field("Name", txt(ch, "name")), field("Spieler", txt(ch, "spieler")),
+           field("Beruf", txt(ch, "beruf")), field("Alter", numIn(ch, "alter")));
+  f.append(sec("Charakter", g));
+
+  const g7 = el("div", "grid7");
+  for (const [k, label] of EIG) g7.append(field(label, numIn(data.eigenschaften, k)));
+  f.append(sec("Grundeigenschaften", g7));
+
+  const cols = el("div", "cols");
+  for (const [k, label] of KAT) {
+    cols.append(sec(label, listEditor(data.fertigkeiten[k], (it) => {
+      const w = el("div", "fields");
+      w.append(txt(it, "name", "Name", "grow2"), numIn(it, "wert", "Wert"), txt(it, "notiz", "Notiz", "grow", true));
+      return w;
+    }, () => ({ name: "", wert: 0 }), "Fertigkeit")));
+  }
+  f.append(cols);
+
+  for (const [k, label] of FREI) f.append(sec(label, area(data.freitext, k, k === "charaktereigenschaften" ? 4 : 5)));
+
+  f.append(sec("Entwicklung", listEditor(data.entwicklung, (a) => {
+    const c = el("div", "card");
+    const top = el("div", "fields");
+    top.append(field("Abenteuer", txt(a, "abenteuer")), field("Datum / Sitzungen", txt(a, "datum", "", "", true)));
+    c.append(top);
+
+    c.append(el("div", "sub", "Verbesserte Fertigkeiten"));
+    c.append(listEditor(a.verbesserungen, (v) => {
+      const w = el("div", "fields");
+      w.append(txt(v, "name", "Fertigkeit", "grow2"), numIn(v, "von", "von"), numIn(v, "auf", "auf"), txt(v, "notiz", "Notiz", "grow", true));
+      return w;
+    }, () => ({ name: "" }), "Verbesserung"));
+
+    c.append(el("div", "sub", "Zauber"));
+    c.append(listEditor(a.zauber, namedRow, () => ({ name: "" }), "Zauber"));
+
+    c.append(el("div", "sub", "Besitz"));
+    c.append(listEditor(a.besitz, namedRow, () => ({ name: "" }), "Besitz"));
+    return c;
+  }, () => ({ abenteuer: "", verbesserungen: [], zauber: [], besitz: [] }), "Abenteuer")));
+}
+
+/* ---------- Laden / Speichern ---------- */
+function setData(raw, name) {
+  data = normalize(raw);
+  aktName = name;
+  setDirty(false);
+  buildForm();
+  if (tab === "raw") { lastDump = JSON.stringify(data, null, 2); $("raw").value = lastDump; }
+}
+
+function merkeName(name) {
+  try {
+    const arr = JSON.parse(localStorage.getItem("coc_edit_files") || "[]");
+    const neu = [name, ...arr.filter(n => n !== name)].slice(0, 20);
+    localStorage.setItem("coc_edit_files", JSON.stringify(neu));
+  } catch (_) {}
+  fuelleListe();
+}
+
+const bekannt = new Set();
+function fuelleListe() {
+  try { for (const n of JSON.parse(localStorage.getItem("coc_edit_files") || "[]")) bekannt.add(n); } catch (_) {}
+  const dl = $("files");
+  dl.replaceChildren();
+  for (const n of [...bekannt].sort()) { const o = document.createElement("option"); o.value = n; dl.append(o); }
+}
+
+/* Versucht, ein Verzeichnislisting des Servers (autoindex) auszulesen */
+async function verzeichnis() {
+  try {
+    const base = new URL("./", location.href);
+    const res = await fetch(base.href, { cache: "no-store" });
+    if (!res.ok || !(res.headers.get("content-type") || "").includes("html")) return;
+    const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+    doc.querySelectorAll("a[href]").forEach(a => {
+      let u;
+      try { u = new URL(a.getAttribute("href"), base); } catch (_) { return; }
+      if (u.origin !== base.origin || !u.pathname.startsWith(base.pathname) || !/\.json$/i.test(u.pathname)) return;
+      const rel = decodeURIComponent(u.pathname.slice(base.pathname.length));
+      if (rel && !rel.includes("/")) bekannt.add(rel);
+    });
+    fuelleListe();
+  } catch (_) {}
+}
+
+async function ladeDatei(name) {
+  name = (name || "").trim();
+  if (!name) { msg("Bitte einen Dateinamen angeben.", true); return; }
+  if (dirty && !confirm("Ungespeicherte Änderungen verwerfen?")) return;
+  msg("Lade …");
+  try {
+    const res = await fetch(name, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    setData(await res.json(), name);
+    merkeName(name);
+    msg("Geladen: " + name);
+  } catch (e) {
+    msg("Laden fehlgeschlagen (" + e.message + ").", true);
+  }
+}
+
+function ausgabe() {
+  if (tab === "raw" && !applyRaw()) return null;
+  return JSON.stringify(data, null, 2) + "\n";
+}
+
+function herunterladen() {
+  const str = ausgabe();
+  if (str === null) return;
+  let fn = aktName.split("?")[0].split("/").pop() || "charakter.json";
+  if (!/\.json$/i.test(fn)) fn += ".json";
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([str], { type: "application/json" }));
+  a.download = fn;
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  setDirty(false);
+  msg(`„${fn}“ heruntergeladen – jetzt auf dem Server im selben Verzeichnis ersetzen.`);
+}
+
+function kopieren() {
+  const str = ausgabe();
+  if (str === null) return;
+  if (!navigator.clipboard) { msg("Kopieren wird von diesem Browser/dieser Seite nicht unterstützt.", true); return; }
+  navigator.clipboard.writeText(str).then(
+    () => msg("JSON in die Zwischenablage kopiert."),
+    () => msg("Kopieren nicht möglich.", true));
+}
+
+/* ---------- JSON-Tab ---------- */
+function applyRaw() {
+  const t = $("raw").value;
+  if (t === lastDump) return true;
+  try {
+    data = normalize(JSON.parse(t));
+    buildForm();
+    markDirty();
+    lastDump = JSON.stringify(data, null, 2);
+    $("raw").value = lastDump;
+    msg("JSON übernommen.");
+    return true;
+  } catch (e) {
+    msg("Ungültiges JSON: " + e.message, true);
+    return false;
+  }
+}
+
+function showTab(t) {
+  if (t === tab) return;
+  if (tab === "raw" && !applyRaw()) return;
+  tab = t;
+  $("form").classList.toggle("hidden", t !== "form");
+  $("rawBox").classList.toggle("hidden", t !== "raw");
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === t));
+  if (t === "raw") { lastDump = JSON.stringify(data, null, 2); $("raw").value = lastDump; }
+}
+
+/* ---------- Start ---------- */
+let gestartet = false;
+function init() {
+  if (gestartet) return;
+  gestartet = true;
+
+  $("btnLoad").addEventListener("click", () => ladeDatei($("fname").value));
+  $("fname").addEventListener("keydown", (ev) => { if (ev.key === "Enter") ladeDatei($("fname").value); });
+  $("btnSave").addEventListener("click", herunterladen);
+  $("btnCopy").addEventListener("click", kopieren);
+  $("btnApply").addEventListener("click", applyRaw);
+  document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+  $("btnNew").addEventListener("click", () => {
+    if (dirty && !confirm("Ungespeicherte Änderungen verwerfen?")) return;
+    const name = (prompt("Dateiname für den neuen Charakter:", "neu.json") || "").trim();
+    if (!name) return;
+    setData(leer(), name);
+    $("fname").value = name;
+    msg("Neuer Charakter – zum Speichern „Herunterladen“ verwenden.");
+  });
+
+  $("pick").addEventListener("change", (ev) => {
+    const file = ev.target.files[0];
+    ev.target.value = "";
+    if (!file) return;
+    if (dirty && !confirm("Ungespeicherte Änderungen verwerfen?")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        setData(JSON.parse(reader.result), file.name);
+        $("fname").value = file.name;
+        msg("Lokale Datei geladen: " + file.name);
+      } catch (e) { msg("Kein gültiges JSON: " + e.message, true); }
+    };
+    reader.readAsText(file);
+  });
+
+  window.addEventListener("beforeunload", (ev) => {
+    if (dirty) { ev.preventDefault(); ev.returnValue = ""; }
+  });
+
+  buildForm();
+  fuelleListe();
+  verzeichnis();
+  const start = new URLSearchParams(location.search).get("json");
+  if (start) $("fname").value = start;
+  ladeDatei($("fname").value);
+}
+
+try { if (sessionStorage.getItem("coc_edit_ok") === "1") entsperren(); } catch (_) {}
+</script>
+</body>
+</html>

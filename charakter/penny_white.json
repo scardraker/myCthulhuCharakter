@@ -1,0 +1,74 @@
+{
+  "charakter": {
+    "name": "Penny White",
+    "spieler": "Selina",
+    "beruf": "Nepo Baby",
+    "alter": 24
+  },
+  "eigenschaften": {
+    "staerke": 40,
+    "geschicklichkeit": 40,
+    "konstitution": 65,
+    "charisma": 60,
+    "bildung": 60,
+    "intelligenz": 55,
+    "magie": 55
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Charme", "wert": 65 },
+      { "name": "Faustfeuerwaffe", "wert": 60 },
+      { "name": "Verborgen bleiben", "wert": 55 },
+      { "name": "Verborgenes erkennen", "wert": 55 },
+      { "name": "Horchen", "wert": 50 },
+      { "name": "Überreden", "wert": 50 },
+      { "name": "Okkultismus", "wert": 30 }
+    ],
+    "sekundaer": [
+      { "name": "Muttersprache", "wert": 80 },
+      { "name": "Finanzkraft", "wert": 50 },
+      { "name": "Spurensuche", "wert": 35 },
+      { "name": "Erste Hilfe", "wert": 30 },
+      { "name": "Handgemenge", "wert": 25 },
+      { "name": "Ausweichen", "wert": 20 },
+      { "name": "Autofahren", "wert": 20 },
+      { "name": "Bibliotheksnutzung", "wert": 20 },
+      { "name": "Klettern", "wert": 20 },
+      { "name": "Schwimmen", "wert": 20 },
+      { "name": "Springen", "wert": 20 },
+      { "name": "Werfen", "wert": 20 }
+    ],
+    "standard": [
+      { "name": "Einschüchtern", "wert": 15 },
+      { "name": "Überzeugen", "wert": 10 },
+      { "name": "Psychologie", "wert": 10 },
+      { "name": "Kaschieren", "wert": 10 },
+      { "name": "Naturkunde", "wert": 10 },
+      { "name": "Orientierung", "wert": 10 },
+      { "name": "Elektrische Reparaturen", "wert": 10 },
+      { "name": "Mechanische Reparaturen", "wert": 10 },
+      { "name": "Geschichte", "wert": 5 },
+      { "name": "Buchführung", "wert": 5 },
+      { "name": "Computernutzung", "wert": 5 },
+      { "name": "Rechtswesen", "wert": 5 },
+      { "name": "Reiten", "wert": 5 },
+      { "name": "Verkleiden", "wert": 5 },
+      { "name": "Werte schätzen", "wert": 5 },
+      { "name": "Anthropologie", "wert": 1 },
+      { "name": "Archäologie", "wert": 1 },
+      { "name": "Elektronik", "wert": 1 },
+      { "name": "Medizin", "wert": 1 },
+      { "name": "Psychoanalyse", "wert": 1 },
+      { "name": "Schließtechnik", "wert": 1 },
+      { "name": "Schweres Gerät", "wert": 1 },
+      { "name": "Cthulhu Mythos", "wert": 0 }
+    ]
+  },
+  "freitext": {
+    "inventar": "",
+    "besitz": "Barschaft: 250 $\nGeldanlagen: 2.500 $\nMonatliches Taschengeld vom Vater",
+    "magie": "",
+    "charaktereigenschaften": "Naiv und vertrauensselig, sehr leicht beeinflussbar von allen möglichen Leuten.\n\nGeboren 1900 in Boston, Setting 1920. Bekommt monatlich ein gutes Taschengeld. Ihre Mutter ist bereits verstorben, ihr Vater ist hauptsächlich mit Arbeit beschäftigt.\n\nNachdem sie für einen Kult angeworben wurde, hat sie Interesse für das Okkulte entwickelt. Der Kult, dem sie beitreten wollte, wurde jedoch kurz darauf von der Polizei festgenommen und besteht nicht mehr. Ihr Interesse für das Okkulte und Übernatürliche bleibt jedoch bestehen.\n\nLernen war noch nie ihre Stärke. Dafür war sie immer neugierig. Hat ihre Nase in alle möglichen Sachen gesteckt und ist gut darin geworden, sich von ihrer Hauslehrerin zu verstecken und vom Anwesen auszubüchsen, um Partys nachzugehen.\n\nKontakte: Variabel, aber normalerweise Leute mit ähnlichem Hintergrund und Geschmack, Bruderschaften, Künstlerkreise, die Oberschicht.\n\nWeitere Werte: Stabilität 55 · Glück 60 · Magiepunkte 11 · Trefferpunkte 10 · Körpergröße 40 · Bewegungsweite 8 · Schadensbonus −1 · Statur −1 · Schmerzgrenze 50"
+  },
+  "entwicklung": []
+}
