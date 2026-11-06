@@ -131,6 +131,18 @@
   .text-grid section { margin-bottom: 0; }
   .free { white-space: pre-wrap; word-wrap: break-word; font-size: .92rem; }
 
+  .adv { padding: 4px 0; border-bottom: 1px dotted var(--border); }
+  .adv:last-child { border-bottom: 0; }
+  .adv-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .adv-title { font-size: .95rem; color: var(--accent-2); }
+  .adv-date { font-size: .72rem; color: var(--muted); }
+  .adv ul { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: .88rem; }
+  .adv-group { display: flex; gap: 8px; align-items: baseline; margin-top: 2px; }
+  .adv-label { font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); min-width: 3.4rem; }
+  .adv-group ul { margin: 0; }
+  .adv li .chg { color: var(--muted); font-variant-numeric: tabular-nums; margin-left: 4px; }
+  .adv li .n { color: var(--muted); font-style: italic; font-size: .75rem; margin-left: 4px; }
+
   #status { text-align: center; color: var(--muted); padding: 24px 0; }
   #status.error { color: var(--danger); }
 
@@ -195,6 +207,11 @@
     </section>
 
     <div class="text-grid" id="texts"></div>
+
+    <section id="devSection" style="margin-top:8px">
+      <h2>Entwicklung</h2>
+      <div id="dev"></div>
+    </section>
   </div>
 
   <section id="loadSection">
@@ -495,8 +512,65 @@ function renderTexts(t) {
   }
 }
 
+function renderDev(liste) {
+  const box = $("dev");
+  box.replaceChildren();
+  if (!Array.isArray(liste) || liste.length === 0) {
+    box.append(el("div", "empty", "Noch keine Einträge."));
+    return;
+  }
+  for (const a of liste) {
+    const adv = el("div", "adv");
+    const head = el("div", "adv-head");
+    head.append(el("span", "adv-title", a.abenteuer ?? a.name ?? a.titel ?? "Abenteuer"));
+    if (a.datum ?? a.date) head.append(el("span", "adv-date", a.datum ?? a.date));
+    adv.append(head);
+
+    const items = a.verbesserungen ?? a.skills ?? a.fertigkeiten ?? [];
+    if (Array.isArray(items) && items.length) {
+      const ul = el("ul");
+      for (const it of items) {
+        const li = el("li");
+        if (typeof it === "string") {
+          li.textContent = it;
+        } else {
+          li.append(document.createTextNode(it.name ?? "?"));
+          const von = num(it.von ?? it.alt), auf = num(it.auf ?? it.neu);
+          if (von !== null && auf !== null) li.append(el("span", "chg", `${von} → ${auf}`));
+          else if (auf !== null) li.append(el("span", "chg", `→ ${auf}`));
+          if (it.notiz ?? it.note) li.append(el("span", "n", it.notiz ?? it.note));
+        }
+        ul.append(li);
+      }
+      adv.append(ul);
+    }
+
+    const gruppen = [["Zauber", a.zauber ?? a.spells], ["Besitz", a.besitz ?? a.items]];
+    for (const [label, roh] of gruppen) {
+      const eintraege = typeof roh === "string" ? [roh] : roh;
+      if (!Array.isArray(eintraege) || !eintraege.length) continue;
+      const row = el("div", "adv-group");
+      row.append(el("span", "adv-label", label));
+      const ul2 = el("ul");
+      for (const it of eintraege) {
+        const li = el("li");
+        if (typeof it === "string") li.textContent = it;
+        else {
+          li.append(document.createTextNode(it.name ?? "?"));
+          if (it.notiz ?? it.note) li.append(el("span", "n", it.notiz ?? it.note));
+        }
+        ul2.append(li);
+      }
+      row.append(ul2);
+      adv.append(row);
+    }
+    box.append(adv);
+  }
+}
+
 function render(data) {
   aktuelleDaten = data;
+  renderDev(pick(data, { key: "entwicklung", alt: ["development", "fortschritt"] }));
   const c = pick(data, { key: "charakter", alt: ["character"] });
   const name = pick(c, { key: "name" });
   if (name) document.title = `${name} – Call of Cthulhu`;
@@ -558,6 +632,15 @@ function quelleAufloesen(eingabe) {
   return { url: s.replace(/\\/g, "/") };
 }
 
+/* Relative Pfade werden zuerst wie angegeben, dann im Unterordner „charakter“ gesucht */
+const UNTERORDNER = "charakter";
+function kandidaten(url) {
+  if (/^[a-z][a-z0-9+.-]*:/i.test(url) || url.startsWith("/")) return [url];
+  const rel = url.replace(/^\.\//, "");
+  if (rel.startsWith(UNTERORDNER + "/")) return [rel];
+  return [url, UNTERORDNER + "/" + rel];
+}
+
 async function laden(eingabe, aufUrlSchreiben = true) {
   const r = quelleAufloesen(eingabe);
   if (r.fehler) { setHint(r.fehler, true); return; }
@@ -569,11 +652,26 @@ async function laden(eingabe, aufUrlSchreiben = true) {
   $("sheet").classList.add("hidden");
 
   try {
-    const res = await fetch(r.url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    let data, gefunden, ersterFehler;
+    for (const url of kandidaten(r.url)) {
+      let res;
+      try {
+        res = await fetch(url, { cache: "no-store" });
+      } catch (e) {
+        ersterFehler = ersterFehler || e;
+        continue;
+      }
+      if (!res.ok) {
+        ersterFehler = ersterFehler || new Error(`HTTP ${res.status}`);
+        continue;
+      }
+      data = await res.json(); /* Datei gefunden, aber kein gültiges JSON -> Fehler */
+      gefunden = url;
+      break;
+    }
+    if (gefunden === undefined) throw ersterFehler || new Error("nicht gefunden");
     render(data);
-    setHint("Geladen: " + eingabe.trim());
+    setHint("Geladen: " + gefunden);
     if (aufUrlSchreiben) {
       const p = new URLSearchParams(location.search);
       p.set("json", eingabe.trim());
