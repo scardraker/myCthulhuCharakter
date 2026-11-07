@@ -509,17 +509,24 @@ function bildLaden(quelle, explizit) {
   const kandidaten = [];
   if (typeof explizit === "string" && explizit.trim()) kandidaten.push(explizit.trim()); /* optional: "charakter": { "bild": "…" } */
   if (basis && !/googleapis\.com/.test(String(quelle))) {
-    for (const e of ["jpg", "jpeg", "webp", "png", "JPG", "JPEG", "WEBP", "PNG"])
-      kandidaten.push(`Bilder/${encodeURIComponent(basis)}.${e}`);
+    const datei = encodeURIComponent(basis);
+    /* Ordner: neben der Seite, im Server-Root, kleingeschrieben */
+    const ordner = ["Bilder/", "/Bilder/", "bilder/", "/bilder/"];
+    for (const o of ordner)
+      for (const e of ["jpg", "jpeg", "webp", "png"]) kandidaten.push(`${o}${datei}.${e}`);
+    for (const e of ["JPG", "JPEG", "WEBP", "PNG"]) kandidaten.push(`Bilder/${datei}.${e}`);
   }
   let i = 0;
   const versuch = () => {
     if (token !== bildToken) return;
     if (i >= kandidaten.length) {
-      /* nichts gefunden: Hinweis an die Statuszeile unten anhängen */
+      /* nichts gefunden: erwartete Adresse in der Statuszeile unten nennen */
       const h = $("hint");
-      if (basis && !h.className.includes("error") && h.textContent)
-        h.textContent += ` · Kein Profilbild gefunden (Bilder/${basis}.jpg, .jpeg, .webp, .png)`;
+      if (basis && !h.className.includes("error") && h.textContent) {
+        let url = `Bilder/${basis}.jpg`;
+        try { url = new URL(kandidaten[kandidaten.length > 4 ? (explizit ? 1 : 0) : 0], location.href).href; } catch (_) {}
+        h.textContent += ` · Kein Profilbild gefunden, erwartet z. B. ${url} (auch .jpeg, .webp, .png)`;
+      }
       return;
     }
     img.src = kandidaten[i++];
