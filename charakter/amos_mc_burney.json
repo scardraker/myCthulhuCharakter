@@ -1,0 +1,83 @@
+{
+  "charakter": {
+    "name": "Amos Mc Burney",
+    "spieler": "B.",
+    "beruf": "Ehem. Artillerieoffizier, jetzt freischaffender Stuntman/Ermittler",
+    "alter": 32
+  },
+  "eigenschaften": {
+    "staerke": 60,
+    "geschicklichkeit": 75,
+    "konstitution": 70,
+    "charisma": 60,
+    "bildung": 90,
+    "intelligenz": 85,
+    "magie": 50
+  },
+  "status": {
+    "hp": 9,
+    "mana": 14,
+    "glueck": 60,
+    "stabilitaet": 50
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Sprengen", "wert": 80 },
+      { "name": "Chemie", "wert": 60 },
+      { "name": "Ausweichen", "wert": 54 },
+      { "name": "Einschüchtern", "wert": 50 },
+      { "name": "Elektrische Reparaturen", "wert": 50 },
+      { "name": "Faustfeuerwaffe", "wert": 50 },
+      { "name": "Handgemenge", "wert": 50 },
+      { "name": "Horchen", "wert": 50 },
+      { "name": "Mechanische Reparaturen", "wert": 50 },
+      { "name": "Überreden", "wert": 50 },
+      { "name": "Erste Hilfe", "wert": 40 },
+      { "name": "Orientierung", "wert": 40 }
+    ],
+    "sekundaer": [
+      { "name": "Muttersprache", "wert": 90 },
+      { "name": "Aufmerksamkeit", "wert": 30 },
+      { "name": "Finanzkraft", "wert": 30 },
+      { "name": "Überzeugen", "wert": 30 },
+      { "name": "Verborgenes erkennen", "wert": 25 },
+      { "name": "Autofahren", "wert": 20 },
+      { "name": "Bibliotheksnutzung", "wert": 20 },
+      { "name": "Kaschieren", "wert": 20 },
+      { "name": "Klettern", "wert": 20 },
+      { "name": "Schwimmen", "wert": 20 },
+      { "name": "Springen", "wert": 20 },
+      { "name": "Verborgen bleiben", "wert": 20 },
+      { "name": "Werfen", "wert": 20 }
+    ],
+    "standard": [
+      { "name": "Charme", "wert": 15 },
+      { "name": "Cthulhu Mythos", "wert": 15 },
+      { "name": "Naturkunde", "wert": 10 },
+      { "name": "Psychologie", "wert": 10 },
+      { "name": "Spurensuche", "wert": 10 },
+      { "name": "Buchführung", "wert": 5 },
+      { "name": "Computernutzung", "wert": 5 },
+      { "name": "Geschichte", "wert": 5 },
+      { "name": "Okkultismus", "wert": 5 },
+      { "name": "Rechtswesen", "wert": 5 },
+      { "name": "Reiten", "wert": 5 },
+      { "name": "Verkleiden", "wert": 5 },
+      { "name": "Werte schätzen", "wert": 5 },
+      { "name": "Anthropologie", "wert": 1 },
+      { "name": "Archäologie", "wert": 1 },
+      { "name": "Elektronik", "wert": 1 },
+      { "name": "Medizin", "wert": 1 },
+      { "name": "Psychoanalyse", "wert": 1 },
+      { "name": "Schließtechnik", "wert": 1 },
+      { "name": "Schweres Gerät", "wert": 1 }
+    ]
+  },
+  "freitext": {
+    "inventar": "Armee-Revolver\nBuch: Das große Lexikon der Chemikalien und ihrer Anwendung in der Pyrotechnik",
+    "besitz": "Barschaft: 55 $\nGeldanlagen: 1.500 $\nWichtige Besitztümer: Feuerzeug",
+    "magie": "",
+    "charaktereigenschaften": "(etwas) pyromanisch veranlagt, sonst sehr besonnen und ruhig\nWenn die Lösung für ein Problem eine Explosion/Feuer sein kann, dann ist diese auch richtig!\n\nOffizier A.D verantwortlich für Srengstoff und schwere Waffen., wurde entlassen als es zu einem \"Vorfall kam\", bei dem ein paar (100) Leute zu schaden gekommen sind :)\nArbeitet jetzt zeitweise als Stuntman und Privatdetektiv\n\nGlaube: Die Reinheit des Feuers wird alles überdauern\n\nVerletzungen: Ein paar alte Narben von Verbrennungen\n\nWichtige Personen: Erwin? -> ehem. Vorgesetzter bei der Armee und jetzt für das Ressort Waffen zuständig.\n\nKontakte: (Film- und Fernsehbranche), Schauspielbetriebe, verschiedene Sprengstoff- und pyrotechnische Firmen, fahrendes Volk, milit. Kontakte\n\nGeboren: 1.1.1892 · Wohnort: irisches Viertel in Bosten · Herkunft: Galway\n\nWeitere Werte: Körpergröße 55 · Bewegungsweite 9 · Schadensbonus 0 · Statur 0 · Schmerzgrenze 10"
+  },
+  "entwicklung": []
+}

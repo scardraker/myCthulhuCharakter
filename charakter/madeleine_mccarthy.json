@@ -1,0 +1,82 @@
+{
+  "charakter": {
+    "name": "Madeleine McCarthy",
+    "spieler": "Maria",
+    "beruf": "Schauspieler",
+    "alter": 23
+  },
+  "eigenschaften": {
+    "staerke": 45,
+    "geschicklichkeit": 45,
+    "konstitution": 40,
+    "charisma": 70,
+    "bildung": 70,
+    "intelligenz": 55,
+    "magie": 55
+  },
+  "status": {
+    "hp": 22,
+    "mana": 13,
+    "glueck": 60,
+    "stabilitaet": 55
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Charme", "wert": 70 },
+      { "name": "Einschüchtern", "wert": 45 },
+      { "name": "Okkultismus", "wert": 40 },
+      { "name": "Verkleiden", "wert": 35 }
+    ],
+    "sekundaer": [
+      { "name": "Aufmerksamkeit", "wert": 30 },
+      { "name": "Verborgenes erkennen", "wert": 25 },
+      { "name": "Werte schätzen", "wert": 25 },
+      { "name": "Ausweichen", "wert": 20 },
+      { "name": "Horchen", "wert": 20 },
+      { "name": "Muttersprache", "wert": 20 },
+      { "name": "Psychologie", "wert": 20 },
+      { "name": "Recherche", "wert": 20 },
+      { "name": "Verborgen bleiben", "wert": 20 },
+      { "name": "Finanzkraft", "wert": 9 }
+    ],
+    "standard": [
+      { "name": "Kaschieren", "wert": 10 },
+      { "name": "Naturkunde", "wert": 10 },
+      { "name": "Orientierung", "wert": 10 },
+      { "name": "Reiten", "wert": 10 },
+      { "name": "Schwimmen", "wert": 10 },
+      { "name": "Springen", "wert": 10 },
+      { "name": "Spurensuche", "wert": 10 },
+      { "name": "Überreden", "wert": 10 },
+      { "name": "Werfen", "wert": 10 },
+      { "name": "Autofahren", "wert": 5 },
+      { "name": "Buchführung", "wert": 5 },
+      { "name": "Cthulhu Mythos", "wert": 5 },
+      { "name": "Erste Hilfe", "wert": 5 },
+      { "name": "Geschichte", "wert": 5 },
+      { "name": "Handgemenge", "wert": 5 },
+      { "name": "Klettern", "wert": 5 },
+      { "name": "Rechtswesen", "wert": 5 },
+      { "name": "Anthropologie", "wert": 0 },
+      { "name": "Archäologie", "wert": 0 },
+      { "name": "Computernutzung", "wert": 0 },
+      { "name": "Elektrische Reparaturen", "wert": 0 },
+      { "name": "Elektronik", "wert": 0 },
+      { "name": "Faustfeuerwaffe", "wert": 0 },
+      { "name": "Mechanische Reparaturen", "wert": 0 },
+      { "name": "Medizin", "wert": 0 },
+      { "name": "Psychoanalyse", "wert": 0 },
+      { "name": "Schauspiel", "wert": 0 },
+      { "name": "Schließtechnik", "wert": 0 },
+      { "name": "Schweres Gerät", "wert": 0 },
+      { "name": "Überzeugen", "wert": 0 }
+    ]
+  },
+  "freitext": {
+    "inventar": "",
+    "besitz": "Barschaft: 9 $\nGeldanlagen: 90 $\nArtefakte: 2/5 von dem Zauberbuch von George und Großvater Henry",
+    "magie": "",
+    "charaktereigenschaften": "- Diva\n- Eingebildet\n- Weiches Herz Maybe vielleicht????\n\n- Großvater war ein Magier\n- Hat mehr oder weniger aus versehen einen Kult um ihre Person gestartet\n- Sucht nach Magie um in die Fußstapfen ihres Großvaters zu treten.\n-\n\nGlaube: - glaubt an das Okkulte\n- Magie\n\nWichtige Personen: Großvater Henry - War Teil eines magischen Kults\nAmos - Stuntman - Freunde - Arbeiten oft zusammen -  Kann Magie anwenden\nChris Chara - Schauspielkollege\n\nKontakte: Theaterbranche, Theaterkritiker, Schauspielergewerkschaft.\n\nGeboren: 01.01.19XX\n\nWeitere Werte: Körpergröße 45 · Bewegungsweite 7 · Schadensbonus 0 · Statur 0 · Schmerzgrenze 2"
+  },
+  "entwicklung": []
+}

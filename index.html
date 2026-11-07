@@ -42,9 +42,30 @@
     background: var(--panel); border: 1px solid var(--border);
     border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;
   }
-  .info { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px 10px; }
+  .char-wrap { display: flex; gap: 10px; align-items: flex-start; }
+  /* 4 Spalten, je 2 Werte übereinander: Name/Spieler, Beruf/Alter, HP/Mana, Glück/Stabilität */
+  .info {
+    flex: 1 1 auto; min-width: 0; display: grid; gap: 6px 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, auto); grid-auto-flow: column;
+  }
   .info .label { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-  .info .value { font-size: 1rem; line-height: 1.2; }
+  .info .value { font-size: 1rem; line-height: 1.2; overflow-wrap: anywhere; }
+  .status-row { display: flex; align-items: baseline; gap: 4px; }
+  .status-input {
+    width: 3.4rem; background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 4px; font: inherit; font-size: 1rem; text-align: center;
+  }
+  .status-input:focus { outline: none; border-color: var(--accent); }
+  .muted { color: var(--muted); }
+  .portrait {
+    flex: 0 0 auto; width: 90px; height: 120px; object-fit: cover; object-position: center top;
+    border: 1px solid var(--border); border-radius: 5px; background: var(--panel-2);
+  }
+  @media (max-width: 520px) {
+    .info { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-flow: row; }
+    .portrait { width: 64px; height: 86px; }
+  }
 
   /* Würfelbereich */
   #dice {
@@ -175,7 +196,10 @@
   <div id="sheet" class="hidden">
     <section>
       <h2>Charakter</h2>
-      <div class="info" id="info"></div>
+      <div class="char-wrap">
+        <div class="info" id="info"></div>
+        <img id="portrait" class="portrait hidden" alt="Profilbild">
+      </div>
     </section>
 
     <section id="dice">
@@ -388,7 +412,20 @@ $("logClear").addEventListener("click", () => {
 });
 
 /* ---------- Rendering ---------- */
-function renderInfo(c) {
+/* Status-Werte: JSON liefert HP/Mana als Maximum bzw. Glück/Stabilität als Startwert,
+   der aktuelle Wert ist editierbar und wird pro Charakter im Browser gemerkt. */
+const STATUS = [
+  { key: "hp",          label: "HP",         alt: ["trefferpunkte", "tp"],        max: true },
+  { key: "mana",        label: "Mana",       alt: ["magiepunkte", "mp"],          max: true },
+  { key: "glueck",      label: "Glück",      alt: ["glück", "gluck", "luck"],     max: false },
+  { key: "stabilitaet", label: "Stabilität", alt: ["stabilität", "san", "sanity"], max: false }
+];
+
+function statusLaden(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch (_) { return null; }
+}
+
+function renderInfo(c, st, quelle) {
   const box = $("info");
   box.replaceChildren();
   const felder = [
@@ -402,6 +439,72 @@ function renderInfo(c) {
     d.append(el("div", "label", label), el("div", "value", val ?? "–"));
     box.append(d);
   }
+
+  const basis = {};
+  for (const d of STATUS) {
+    const raw = pick(st, d);
+    const v = raw === undefined || raw === null || raw === "" ? null : num(raw);
+    if (v !== null) basis[d.key] = v;
+  }
+  const speicherKey = "coc_status:" + quelle;
+  let saved = statusLaden(speicherKey);
+  /* Hat sich die JSON geändert, gelten wieder deren Werte */
+  if (!saved || JSON.stringify(saved.basis) !== JSON.stringify(basis)) saved = { basis, cur: {} };
+  const cur = saved.cur || (saved.cur = {});
+  const sichern = () => { try { localStorage.setItem(speicherKey, JSON.stringify(saved)); } catch (_) {} };
+
+  for (const d of STATUS) {
+    const cell = el("div");
+    cell.append(el("div", "label", d.label));
+    const base = basis[d.key];
+    if (base === undefined) {
+      cell.append(el("div", "value", "–"));
+      box.append(cell);
+      continue;
+    }
+    const max = d.max ? base : 99;
+    const inp = el("input", "status-input");
+    inp.type = "number";
+    inp.inputMode = "numeric";
+    inp.min = 0;
+    inp.max = max;
+    inp.value = Math.min(max, Math.max(0, num(cur[d.key] ?? base) ?? base));
+    inp.title = d.label + (d.max ? " (aktuell / Maximum)" : "");
+    inp.addEventListener("change", () => {
+      let v = Math.round(Number(inp.value));
+      if (inp.value === "" || !Number.isFinite(v)) v = base;
+      v = Math.max(0, Math.min(max, v));
+      inp.value = v;
+      cur[d.key] = v;
+      sichern();
+    });
+    const row = el("div", "value status-row");
+    row.append(inp);
+    if (d.max) row.append(el("span", "muted", "/ " + base));
+    cell.append(row);
+    box.append(cell);
+  }
+}
+
+/* Profilbild: Bilder/<Name der JSON>.jpg|jpeg|webp|png */
+let bildToken = 0;
+function bildLaden(quelle) {
+  const img = $("portrait");
+  const token = ++bildToken;
+  img.classList.add("hidden");
+  img.removeAttribute("src");
+  let basis = String(quelle || "").replace(/^lokal:/, "").split(/[?#]/)[0].split("/").pop().replace(/\.[^.]+$/, "");
+  try { basis = decodeURIComponent(basis); } catch (_) {}
+  if (!basis || /googleapis\.com/.test(String(quelle))) return;
+  const endungen = ["jpg", "jpeg", "webp", "png"];
+  let i = 0;
+  const versuch = () => {
+    if (token !== bildToken || i >= endungen.length) return;
+    img.src = `Bilder/${encodeURIComponent(basis)}.${endungen[i++]}`;
+  };
+  img.onload = () => { if (token === bildToken) img.classList.remove("hidden"); };
+  img.onerror = versuch;
+  versuch();
 }
 
 /* ---------- Sortierung ---------- */
@@ -565,13 +668,14 @@ function renderDev(liste) {
   }
 }
 
-function render(data) {
+function render(data, quelle = "") {
   aktuelleDaten = data;
   renderDev(pick(data, { key: "entwicklung", alt: ["development", "fortschritt"] }));
   const c = pick(data, { key: "charakter", alt: ["character"] });
   const name = pick(c, { key: "name" });
   if (name) document.title = `${name} – Call of Cthulhu`;
-  renderInfo(c || {});
+  renderInfo(c || {}, pick(data, { key: "status", alt: ["werte"] }) || {}, quelle);
+  bildLaden(quelle);
   renderStats(pick(data, { key: "eigenschaften", alt: ["attribute"] }) || {});
   renderSkills(pick(data, { key: "fertigkeiten", alt: ["skills"] }) || {});
   renderTexts(pick(data, { key: "freitext", alt: ["texte"] }) || {});
@@ -667,7 +771,7 @@ async function laden(eingabe, aufUrlSchreiben = true) {
       break;
     }
     if (gefunden === undefined) throw ersterFehler || new Error("nicht gefunden");
-    render(data);
+    render(data, gefunden);
     setHint("Geladen: " + gefunden);
     if (aufUrlSchreiben) {
       const p = new URLSearchParams(location.search);
@@ -698,7 +802,7 @@ $("filePick").addEventListener("change", (ev) => {
   const reader = new FileReader();
   reader.onload = () => {
     try {
-      render(JSON.parse(reader.result));
+      render(JSON.parse(reader.result), "lokal:" + file.name);
       setHint("Geladen (lokale Datei): " + file.name);
     } catch (e) { showError("Die Datei ist kein gültiges JSON: " + e.message); }
   };

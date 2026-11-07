@@ -1,0 +1,81 @@
+{
+  "charakter": {
+    "name": "Michael McCalester",
+    "spieler": "Chris",
+    "beruf": "Schauspieler",
+    "alter": 30
+  },
+  "eigenschaften": {
+    "staerke": 45,
+    "geschicklichkeit": 65,
+    "konstitution": 50,
+    "charisma": 70,
+    "bildung": 60,
+    "intelligenz": 80,
+    "magie": 60
+  },
+  "status": {
+    "hp": 10,
+    "mana": 12,
+    "glueck": 60,
+    "stabilitaet": 60
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Schauspiel", "wert": 75 },
+      { "name": "Überzeugen", "wert": 66 },
+      { "name": "Charme", "wert": 60 },
+      { "name": "Verkleiden", "wert": 55 },
+      { "name": "Verborgenes erkennen", "wert": 45 },
+      { "name": "Orientierung", "wert": 40 },
+      { "name": "Psychologie", "wert": 40 },
+      { "name": "Schließtechnik", "wert": 40 },
+      { "name": "Verborgen bleiben", "wert": 40 }
+    ],
+    "sekundaer": [
+      { "name": "Muttersprache", "wert": 60 },
+      { "name": "Finanzkraft", "wert": 40 },
+      { "name": "Ausweichen", "wert": 32 },
+      { "name": "Erste Hilfe", "wert": 30 },
+      { "name": "Klettern", "wert": 30 },
+      { "name": "Handgemenge", "wert": 25 },
+      { "name": "Horchen", "wert": 25 },
+      { "name": "Autofahren", "wert": 20 },
+      { "name": "Faustfeuerwaffe", "wert": 20 },
+      { "name": "Geschichte", "wert": 20 },
+      { "name": "Recherche", "wert": 20 },
+      { "name": "Schwimmen", "wert": 20 },
+      { "name": "Springen", "wert": 20 },
+      { "name": "Werfen", "wert": 20 }
+    ],
+    "standard": [
+      { "name": "Einschüchtern", "wert": 10 },
+      { "name": "Elektrische Reparaturen", "wert": 10 },
+      { "name": "Kaschieren", "wert": 10 },
+      { "name": "Mechanische Reparaturen", "wert": 10 },
+      { "name": "Naturkunde", "wert": 10 },
+      { "name": "Spurensuche", "wert": 10 },
+      { "name": "Buchführung", "wert": 5 },
+      { "name": "Computernutzung", "wert": 5 },
+      { "name": "Okkultismus", "wert": 5 },
+      { "name": "Rechtswesen", "wert": 5 },
+      { "name": "Reiten", "wert": 5 },
+      { "name": "Werte schätzen", "wert": 5 },
+      { "name": "Anthropologie", "wert": 1 },
+      { "name": "Archäologie", "wert": 1 },
+      { "name": "Elektronik", "wert": 1 },
+      { "name": "Medizin", "wert": 1 },
+      { "name": "Psychoanalyse", "wert": 1 },
+      { "name": "Schweres Gerät", "wert": 1 },
+      { "name": "Cthulhu Mythos", "wert": 0 },
+      { "name": "Überreden", "wert": 0 }
+    ]
+  },
+  "freitext": {
+    "inventar": "",
+    "besitz": "Barschaft: 80 $\nGeldanlagen: 2.000 $\nWichtige Besitztümer: Ein Schlüssel, von meinem Vater, bei dem ich nicht weiß, was er öffnet.",
+    "magie": "",
+    "charaktereigenschaften": "Ruhig und bedacht.\n\nSchauspieler, der aus einer armen Familie kommt, aber jetzt trotzdem sein berühmtes Leben auszukosten weiß.\n\nGlaube: Agnostiker, ich glaube weder an Übernatürliches, sage aber auch nicht, dass es das nicht gibt.\n\nVerletzungen: Narbe auf dem rechten Schulterblatt, wo ich nicht weiß, wo sie herkommt.\n\nPhobien/Manien: Schizophrenie.\n\nWichtige Personen: Mein Schauspiellehrer, der mir mein charismatisches Schauspiel beigebracht hat.\n\nKontakte: Theaterbranche, Theaterkritiker, Schauspielergewerkschaft.\n\nWeitere Werte: Körpergröße 55 · Bewegungsweite 8 · Schadensbonus 0 · Statur 0 · Schmerzgrenze 10"
+  },
+  "entwicklung": []
+}

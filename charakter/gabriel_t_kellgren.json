@@ -1,0 +1,99 @@
+{
+  "charakter": {
+    "name": "Gabriel T. Kellgren",
+    "spieler": "Clarissa",
+    "beruf": "Archäologe",
+    "alter": 30
+  },
+  "eigenschaften": {
+    "staerke": 85,
+    "geschicklichkeit": 70,
+    "konstitution": 85,
+    "charisma": 85,
+    "bildung": 89,
+    "intelligenz": 75,
+    "magie": 55
+  },
+  "status": {
+    "hp": 28,
+    "mana": 10,
+    "glueck": 58,
+    "stabilitaet": 55
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Archäologie", "wert": 40 },
+      { "name": "Geschichte", "wert": 40 },
+      { "name": "Verborgenes erkennen", "wert": 40 },
+      { "name": "Orientierung", "wert": 35 },
+      { "name": "Überzeugen", "wert": 32 },
+      { "name": "Bibliotheksnutzung", "wert": 31 },
+      { "name": "Erste Hilfe", "wert": 30 },
+      { "name": "Werte schätzen", "wert": 30 }
+    ],
+    "sekundaer": [
+      { "name": "Muttersprache", "wert": 89 },
+      { "name": "Ausweichen", "wert": 36 },
+      { "name": "Aufmerksamkeit", "wert": 30 },
+      { "name": "Computernutzung", "wert": 25 },
+      { "name": "Gewehr/Flinte", "wert": 25 },
+      { "name": "Handgemenge", "wert": 25 },
+      { "name": "Koch", "wert": 25 },
+      { "name": "Latein", "wert": 25 },
+      { "name": "Überreden", "wert": 25 },
+      { "name": "Autofahren", "wert": 20 },
+      { "name": "Buchführung", "wert": 20 },
+      { "name": "Faustfeuerwaffe", "wert": 20 },
+      { "name": "Finanzkraft", "wert": 20 },
+      { "name": "Horchen", "wert": 20 },
+      { "name": "Klettern", "wert": 20 },
+      { "name": "Kryptographie", "wert": 20 },
+      { "name": "Mechanische Reparaturen", "wert": 20 },
+      { "name": "Schwimmen", "wert": 20 },
+      { "name": "Springen", "wert": 20 },
+      { "name": "Verborgen bleiben", "wert": 20 },
+      { "name": "Werfen", "wert": 20 },
+      { "name": "Zimmermann", "wert": 20 }
+    ],
+    "standard": [
+      { "name": "Elektrische Reparaturen", "wert": 19 },
+      { "name": "Psychologie", "wert": 17 },
+      { "name": "Arabisch", "wert": 15 },
+      { "name": "Charme", "wert": 15 },
+      { "name": "Einschüchtern", "wert": 15 },
+      { "name": "Hebräisch", "wert": 15 },
+      { "name": "Okkultismus", "wert": 15 },
+      { "name": "Rechtswesen", "wert": 15 },
+      { "name": "Reiten", "wert": 15 },
+      { "name": "Anthropologie", "wert": 10 },
+      { "name": "Boot", "wert": 10 },
+      { "name": "Botanik", "wert": 10 },
+      { "name": "Chemie", "wert": 10 },
+      { "name": "Elektronik", "wert": 10 },
+      { "name": "Forensik", "wert": 10 },
+      { "name": "Fotografie", "wert": 10 },
+      { "name": "Geologie", "wert": 10 },
+      { "name": "Helikopter", "wert": 10 },
+      { "name": "Kaschieren", "wert": 10 },
+      { "name": "Medizin", "wert": 10 },
+      { "name": "Naturkunde", "wert": 10 },
+      { "name": "Physik", "wert": 10 },
+      { "name": "Psychoanalyse", "wert": 10 },
+      { "name": "Schließtechnik", "wert": 10 },
+      { "name": "Schweres Gerät", "wert": 10 },
+      { "name": "Spurensuche", "wert": 10 },
+      { "name": "Tropen", "wert": 10 },
+      { "name": "Überlieferungen", "wert": 10 },
+      { "name": "Wüste", "wert": 10 },
+      { "name": "Verkleiden", "wert": 5 },
+      { "name": "Cthulhu Mythos", "wert": 0 }
+    ]
+  },
+  "freitext": {
+    "inventar": "Notizbuch, Stifte, sein Lieblingsbuch über die Entschlüsselung von kryptischen Zeichen, Messer, Schrotgewehr, Schrotmunition, Öllampe, Seil, Erste Hilfe Koffer\nWaffe: Schrotflinte (Schaden 4W6)\nWaffe: Messer",
+    "besitz": "Barschaft: 390 $\nGeldanlagen: 1.000 $\nWichtige Besitztümer: Sein Wissen und seine Erinnerungen\nArtefakte: Gegabeltes Zeichen von Hexen von Mortimers Fork",
+    "magie": "",
+    "charaktereigenschaften": "Neugierig, Ehrgeizig, Tendenzen sich fast wie ihm Wahn mit einer Sache zu beschäftigen und alles andere zu ignorieren\n\nGlaube: Jeder ist seines Glückes Schmied.\nDu kannst alles erreichen, wenn du nur willst.\nDu musst besser sein als andere, um weiter zu kommen.\n\nVerletzungen: Eine Schusswunde an der Schulter - Zugefügt bei einem Überfall des Camps bei Ausgrabungen in Arabien gegen Plünderern.\n\nPhobien/Manien: Keine abgeschlossenen oder ungesicherten Räume - Bei dem Überfall von Plündern, konnten diese ungehindert in die Zelte eindringen. Mehrere Expeditionsmitglieder sind dabei umgekommen. Laute Geräusche lassen ihn immer noch aufschrecken oder extrem misstrauisch werden.\n\nWichtige Personen: James Sullyvan, Gönner, der sein Studium mitfinanziert hat\n\nBedeutsame Orte: Britisches Museum - der Besuch in seiner Kindheit hat ihn dazu inspiriert Archäologe zu werden\n\nKontakte: Gönner, Museen, Universitäten.\n\nGeboren: 1890 · Wohnort: Bosten · Herkunft: London\n\nWeitere Werte: Körpergröße 65 · Bewegungsweite 9 · Schadensbonus 1W4 · Statur 1 · Schmerzgrenze 10"
+  },
+  "entwicklung": []
+}

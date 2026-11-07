@@ -1,0 +1,85 @@
+{
+  "charakter": {
+    "name": "Helena Collins",
+    "spieler": "V",
+    "beruf": "Apotheker",
+    "alter": 30
+  },
+  "eigenschaften": {
+    "staerke": 55,
+    "geschicklichkeit": 40,
+    "konstitution": 40,
+    "charisma": 65,
+    "bildung": 70,
+    "intelligenz": 60,
+    "magie": 40
+  },
+  "status": {
+    "hp": 9,
+    "mana": 8,
+    "glueck": 60,
+    "stabilitaet": 40
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Pharmazie", "wert": 70 },
+      { "name": "Bibliotheksnutzung", "wert": 55 },
+      { "name": "Medizin", "wert": 55 },
+      { "name": "Erste Hilfe", "wert": 54 },
+      { "name": "Aufmerksamkeit", "wert": 40 },
+      { "name": "Überreden", "wert": 38 },
+      { "name": "Charme", "wert": 32 },
+      { "name": "Buchführung", "wert": 30 }
+    ],
+    "sekundaer": [
+      { "name": "Muttersprache", "wert": 70 },
+      { "name": "Finanzkraft", "wert": 40 },
+      { "name": "Horchen", "wert": 35 },
+      { "name": "Naturkunde", "wert": 34 },
+      { "name": "Psychologie", "wert": 28 },
+      { "name": "Okkultismus", "wert": 25 },
+      { "name": "Chemie", "wert": 23 },
+      { "name": "Ausweichen", "wert": 20 },
+      { "name": "Klettern", "wert": 20 },
+      { "name": "Latein", "wert": 20 },
+      { "name": "Springen", "wert": 20 },
+      { "name": "Verborgen bleiben", "wert": 20 },
+      { "name": "Verborgenes erkennen", "wert": 20 },
+      { "name": "Werfen", "wert": 20 }
+    ],
+    "standard": [
+      { "name": "Einschüchtern", "wert": 15 },
+      { "name": "Handgemenge", "wert": 15 },
+      { "name": "Lügen", "wert": 14 },
+      { "name": "Geschichte", "wert": 13 },
+      { "name": "Anthropologie", "wert": 11 },
+      { "name": "Schließtechnik", "wert": 11 },
+      { "name": "Autofahren", "wert": 10 },
+      { "name": "Computernutzung", "wert": 10 },
+      { "name": "Elektrische Reparaturen", "wert": 10 },
+      { "name": "Kaschieren", "wert": 10 },
+      { "name": "Mechanische Reparaturen", "wert": 10 },
+      { "name": "Orientierung", "wert": 10 },
+      { "name": "Schwimmen", "wert": 10 },
+      { "name": "Spurensuche", "wert": 10 },
+      { "name": "Reiten", "wert": 5 },
+      { "name": "Werte schätzen", "wert": 5 },
+      { "name": "Archäologie", "wert": 1 },
+      { "name": "Elektronik", "wert": 1 },
+      { "name": "Faustfeuerwaffe", "wert": 1 },
+      { "name": "Psychoanalyse", "wert": 1 },
+      { "name": "Rechtswesen", "wert": 1 },
+      { "name": "Schweres Gerät", "wert": 1 },
+      { "name": "Verkleiden", "wert": 1 },
+      { "name": "Cthulhu Mythos", "wert": 0 },
+      { "name": "Überzeugen", "wert": 0 }
+    ]
+  },
+  "freitext": {
+    "inventar": "",
+    "besitz": "Barschaft: 80 $\nGeldanlagen: 2.000 $",
+    "magie": "",
+    "charaktereigenschaften": "Ruhig, intelligent, harmonieliebend, korrekt, gerecht\n\nAlleinstehende Apothekerin, unfähig schwanger zu werden, daher mit 30 ohne Kind. Belesen und interessiert an Medizin und Naturwissenschaften. Aufgrund ihres Geschlechts ist sie eben \"nur\" Apothekerin geworden.\n\nKontakte: Die örtliche Gemeinde, örtliche Ärzte, Krankenhäuser, Patienten. Zugang zu allen Arten von Chemikalien und Medikamenten.\n\nWeitere Werte: Körpergröße 55 · Bewegungsweite 8 · Schadensbonus 0 · Statur 0 · Schmerzgrenze 10"
+  },
+  "entwicklung": []
+}

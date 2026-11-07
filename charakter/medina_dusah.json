@@ -1,0 +1,80 @@
+{
+  "charakter": {
+    "name": "Medina Dusah",
+    "spieler": "Selina",
+    "beruf": "Jurist",
+    "alter": 28
+  },
+  "eigenschaften": {
+    "staerke": 40,
+    "geschicklichkeit": 30,
+    "konstitution": 70,
+    "charisma": 75,
+    "bildung": 85,
+    "intelligenz": 85,
+    "magie": 55
+  },
+  "status": {
+    "hp": 12,
+    "mana": 11,
+    "glueck": 25,
+    "stabilitaet": 55
+  },
+  "fertigkeiten": {
+    "primaer": [
+      { "name": "Überreden", "wert": 70 },
+      { "name": "Charme", "wert": 61 },
+      { "name": "Einschüchtern", "wert": 59 },
+      { "name": "Ausweichen", "wert": 54 },
+      { "name": "Spurensuche", "wert": 53 },
+      { "name": "Überzeugen", "wert": 51 },
+      { "name": "Verborgenes erkennen", "wert": 50 },
+      { "name": "Rechtswesen", "wert": 46 },
+      { "name": "Computernutzung", "wert": 45 },
+      { "name": "Bibliotheksnutzung", "wert": 36 }
+    ],
+    "sekundaer": [
+      { "name": "Muttersprache", "wert": 85 },
+      { "name": "Finanzkraft", "wert": 69 },
+      { "name": "Horchen", "wert": 39 },
+      { "name": "Erste Hilfe", "wert": 30 },
+      { "name": "Psychologie", "wert": 28 },
+      { "name": "Handgemenge", "wert": 25 },
+      { "name": "Autofahren", "wert": 20 },
+      { "name": "Faustfeuerwaffe", "wert": 20 },
+      { "name": "Klettern", "wert": 20 },
+      { "name": "Schwimmen", "wert": 20 },
+      { "name": "Springen", "wert": 20 },
+      { "name": "Verborgen bleiben", "wert": 20 },
+      { "name": "Werfen", "wert": 20 }
+    ],
+    "standard": [
+      { "name": "Elektrische Reparaturen", "wert": 10 },
+      { "name": "Kaschieren", "wert": 10 },
+      { "name": "Mechanische Reparaturen", "wert": 10 },
+      { "name": "Naturkunde", "wert": 10 },
+      { "name": "Orientierung", "wert": 10 },
+      { "name": "Verkleiden", "wert": 9 },
+      { "name": "Buchführung", "wert": 5 },
+      { "name": "Geschichte", "wert": 5 },
+      { "name": "Okkultismus", "wert": 5 },
+      { "name": "Reiten", "wert": 5 },
+      { "name": "Werte schätzen", "wert": 5 },
+      { "name": "Anthropologie", "wert": 1 },
+      { "name": "Archäologie", "wert": 1 },
+      { "name": "Elektronik", "wert": 1 },
+      { "name": "Medizin", "wert": 1 },
+      { "name": "Psychoanalyse", "wert": 1 },
+      { "name": "Schließtechnik", "wert": 1 },
+      { "name": "Schweres Gerät", "wert": 1 },
+      { "name": "Cthulhu Mythos", "wert": 0 }
+    ]
+  },
+  "freitext": {
+    "inventar": "pocket pistol 25er Derringer\n22er Automatik",
+    "besitz": "Barschaft: 345 $\nGeldanlagen: 3.450 $\nWichtige Besitztümer: Ihr erstes Gesetzbuch, welches ein Geschenk ihres Vormunds zu Beginn ihres Jurastudiums war.\nEin Armband mit aufklappbarem Medaillon in dem die Bilder ihrer Eltern sind.",
+    "magie": "Des Nachts sah sie einmal eine schwarze Katze, deren Umriss in den Schatten plötzlich zu verschwimmen und zu dem eines Hundes zu werden schien.",
+    "charaktereigenschaften": "Wirkt aus der Entfernung kühl\nSucht unterbewusst nach Aufmerksamkeit und Zuneigung\nScharfer Verstand\ngute Soziale Fähigkeiten\n\nAls Tochter iranischer Immigranten geboren, erlitt Medina schon früh ihren ersten Schicksalsschlag. Es war der 1.Mai, als sie gemeinsam mit ihren Eltern in dem frisch gekauften Familienauto zu einem gemütlichen Parkausflug aus dem ländlichen Bostoner Vorort in die Innenstadt fuhr. \nEs war kurz vor der Bäckerei. Dr. Ilami Dusah mochte sich seit den entbehrungsreichen ersten Jahren als Immigrant zu einem erfolgreichen Arzt hochgearbeitet haben, doch seine Fahrkünste waren seit dem Kauf des neuen Nash Touring vor drei Wochen noch nicht mit seinen medizinischen Fähigkeiten zu vergleichen. Und so hatte das Schicksal leichtes Spiel, als es den Wagen in einer rutschigen Kurve zu weit von der Fahrbahn abkommen ließ.\nDas Lenkrad verließ Dr. Dusahs Finger und machte sich selbstständig. Der Laternenpfahl kam näher und versperrte jede Flucht vor dem Unglück. \nEs brauchte nur Sekunden, um das Leben aus den Körpern zweier Menschen in einem nagelneuen Nash Touring zu quetschen. Doch es war genug, dass Frau Nisa Dusahs Schrei durch die morgenstille Bakers Street West schnitt, vermengt mit dem ihrer achtjährigen Tochter auf dem Rücksitz. \nDas Quietschen der Reifen, Metall und schriller Schmerz. Es war ein Film von durchdringender Intensität und Entsetzen, der auch nicht durch die Jahre verblasste, in denen sich der Film auf einer ungefragten Leinwand vor Medinas Augen wieder und wieder abspielte. \nDer Bäcker und sein Sohn, die Nachbarn und die Polizisten die nur wenig später am Unfallort eintrafen und ein verstörtes, weinendes Mädchen und zwei Leichen bargen - das alles war für immer aus ihrem Gedächtnis gelöscht.\nDanach war Medinas Leben nicht mehr dasselbe.\nEingerichtet in einem Treuhandfond, sorgte ein Freund Dr. Ilam Dusahs für Medinas Ausbildung.\nSie wurde auf ein Internat geschickt. Die Sommerferien verbrachte sie im Stadtanwesen ihres neuen Vormunds.\nDoch was es ihr an materiellem nicht mangelte, das konnte ihr Dr. Ealsass van Brown, gefragter und vielbeschäftigter Rechtsanwalt der Bostoner Gesellschaft, an Aufmerksamkeit nicht schenken. Und so blieb Medina keine andere Möglichkeit, als sich diese in den seltenen Interaktionen der halbjährlichen Zeugnisvorlage, durch ihre hervorragenden Noten zu erkaufen. \nJahr um Jahr erhielt sie die Auszeichnung als Klassenbeste. Und wo ihr herausragender Verstand und ihre Intelligenz nicht reichten, das schafften ihr unersättlicher Ehrgeiz und das Verlangen nach Liebe.\nWar es also verwunderlich, dass sie, deren Ziel es über die Jahre geworden war, ihrem Vormund ein Lächeln der Anerkennung zu entringen/locken, seinem beruflichen Pfad nahzueifern begann/ zu folgen begann?\nEs wäre überflüssig zu erwähnen, dass sich ihre herausragenden Leistungen auch nach ihrem Schulabschluss durch ihre Studienzeit zogen.\nNun war sie 28 Jahre alt. Das Jurastudium seit einem Jahr beendet und sich erfolgreich in den Reihen ihrer Kollegen und Kolleginnen eingereiht und behauptet.\nDoch was machte man, wenn der Mann, für den man jeden Schritt im Leben, seit man 8 Jahre alt war gemacht hatte, gestorben war.\nMedina hatte keine Zeit für andere Männer in ihrem Leben gefunden. Der Ehrgeiz, der Rausch von Erfolg und Anerkennung hatten sie zwanzig Jahre in den Armen gehalten, und genährt. Doch nun, alleine am Grab des Mannes, für den sie gelebt hatte, begann sie sich zu fragen. Wohin?\n\nGlaube: Die Welt hatte sie verlassen, als sie 8 Jahre alt war und so musste sie sich eine eigene neue Welt schaffen. Ihr Vormund Dr. Ealsass van Brown wurde der Mittelpunkt dieser neuen Welt, Erfolg der Schlüssel zu Liebe und Aufmerksamkeit. Nichts kann Medina aufhalten, wenn sie sich auf eine neue Aufgabe stürzt. Und kein Loch ist tiefer als das des Versagens.\n\nVerletzungen: Eine tiefe Narbe auf dem rechten Knie und am rechten Unterarm von dem Autounfall.\nEine Harbe am Ohrläppchen, als sie mit 14 jahren beim Tennisspiel stürzte.\n\nPhobien/Manien: Pfützenphobie\n\nWichtige Personen: Dr. Ealsass van Brown\n\nBedeutsame Orte: Das Grab von Dr. Ealsass van Brown\nDas Grab ihrer Eltern.\nDas alte Haus ihrer Eltern.\nDas Stadthaus von Dr. Ealsass van Brown.\n\nKontakte: Organisiertes Verbrechen, die Finanzwelt, Bezirksstaatsanwälte, Richter.\n\nGeboren: 1893 · Wohnort: Boston · Herkunft: Hausgeburt\n\nWeitere Werte: Körpergröße 50 · Bewegungsweite 7 · Schadensbonus 0 · Statur 0 · Schmerzgrenze 50"
+  },
+  "entwicklung": []
+}

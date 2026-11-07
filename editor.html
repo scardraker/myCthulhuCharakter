@@ -140,6 +140,13 @@ const KAT = [
   ["sekundaer", "Sekundär", ["sekundär", "secondary"]],
   ["standard", "Standard", ["default"]]
 ];
+/* HP/Mana = Maximalwerte, Glück/Stabilität = Startwerte (im Bogen editierbar) */
+const STATUS = [
+  ["hp", "HP (Maximum)", ["trefferpunkte", "tp"]],
+  ["mana", "Mana (Maximum)", ["magiepunkte", "mp"]],
+  ["glueck", "Glück", ["glück", "gluck", "luck"]],
+  ["stabilitaet", "Geistige Stabilität", ["stabilität", "san", "sanity"]]
+];
 const FREI = [
   ["inventar", "Inventar", []],
   ["besitz", "Besitz", []],
@@ -157,6 +164,7 @@ function leer() {
   return {
     charakter: { name: "", spieler: "", beruf: "" },
     eigenschaften: {},
+    status: {},
     fertigkeiten: { primaer: [], sekundaer: [], standard: [] },
     freitext: { inventar: "", besitz: "", magie: "", charaktereigenschaften: "" },
     entwicklung: []
@@ -232,6 +240,14 @@ function normalize(raw) {
     if (v !== undefined) eig[k] = nz(v);
   }
   out.eigenschaften = { ...eig, ...ee };
+
+  const ss = obj(take(src, ["status", "werte"]));
+  const sta = {};
+  for (const [k, , alts] of STATUS) {
+    const v = take(ss, [k, ...alts]);
+    if (v !== undefined) sta[k] = nz(v);
+  }
+  out.status = { ...sta, ...ss };
 
   const ff = obj(take(src, ["fertigkeiten", "skills"]));
   const fert = {};
@@ -390,6 +406,10 @@ function buildForm() {
   const g7 = el("div", "grid7");
   for (const [k, label] of EIG) g7.append(field(label, numIn(data.eigenschaften, k)));
   f.append(sec("Grundeigenschaften", g7));
+
+  const gs = el("div", "grid4");
+  for (const [k, label] of STATUS) gs.append(field(label, numIn(data.status, k)));
+  f.append(sec("Status", gs));
 
   const cols = el("div", "cols");
   for (const [k, label] of KAT) {
