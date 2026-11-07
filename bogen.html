@@ -44,9 +44,10 @@
   }
   .char-wrap { display: flex; gap: 10px; align-items: flex-start; }
   /* 4 Spalten, je 2 Werte übereinander: Name/Spieler, Beruf/Alter, HP/Mana, Glück/Stabilität */
+  /* Spaltenbreite richtet sich nach dem Inhalt (nicht gleichmäßig) */
   .info {
-    flex: 1 1 auto; min-width: 0; display: grid; gap: 6px 10px;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    flex: 1 1 auto; min-width: 0; display: grid; gap: 6px 18px; justify-content: start;
+    grid-template-columns: repeat(4, minmax(min-content, max-content));
     grid-template-rows: repeat(2, auto); grid-auto-flow: column;
   }
   .info .label { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
@@ -63,7 +64,7 @@
     border: 1px solid var(--border); border-radius: 5px; background: var(--panel-2);
   }
   @media (max-width: 520px) {
-    .info { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-flow: row; }
+    .info { grid-template-columns: repeat(2, minmax(min-content, max-content)); grid-template-rows: none; grid-auto-flow: row; gap: 6px 14px; }
     .portrait { width: 64px; height: 86px; }
   }
 
@@ -108,11 +109,21 @@
     margin-left: 8px;
   }
   .small-btn:hover { color: var(--text); border-color: var(--accent); }
-  #log { list-style: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto; font-size: .82rem; }
+  /* feste Größe: 10 Zeilen à 1.5rem; eingeklappt nur die oberste Zeile (letzter Wurf) */
+  #log { list-style: none; margin: 0; padding: 0; height: 15rem; overflow: hidden; font-size: .82rem; }
+  #logSec.collapsed #log { height: 1.5rem; }
   #log li {
     display: grid; grid-template-columns: 3rem 1fr 2.4rem 8.5rem; gap: 6px;
-    padding: 1px 0; border-bottom: 1px dotted var(--border);
+    height: 1.5rem; line-height: 1.5rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    border-bottom: 1px dotted var(--border);
   }
+
+  /* Einklappbare Bereiche */
+  h2.toggle { cursor: pointer; user-select: none; }
+  h2.toggle::after { content: "▾"; float: right; color: var(--muted); }
+  .collapsed h2.toggle::after { content: "▸"; }
+  .coll.collapsed > :not(h2) { display: none; }
+  .coll.collapsed > h2 { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
   #log .t { color: var(--muted); font-variant-numeric: tabular-nums; }
   #log .r { text-align: right; font-variant-numeric: tabular-nums; }
   #log .o { text-align: right; }
@@ -222,7 +233,7 @@
 
     <div class="skill-cols" id="skills"></div>
 
-    <section>
+    <section id="logSec">
       <div class="head-row">
         <h2>Letzte Würfe</h2>
         <button type="button" class="small-btn" id="logClear">Leeren</button>
@@ -232,7 +243,7 @@
 
     <div class="text-grid" id="texts"></div>
 
-    <section id="devSection" style="margin-top:8px">
+    <section id="devSection" class="coll" style="margin-top:8px">
       <h2>Entwicklung</h2>
       <div id="dev"></div>
     </section>
@@ -267,7 +278,7 @@ const CONFIG = {
   DATEI: "charakter.json",
   DRIVE_FILE_ID: "",
   DRIVE_API_KEY: "",
-  LOG_MAX: 20,
+  LOG_MAX: 10,
   LOG_KEY: "coc_wurf_log"
 };
 
@@ -488,19 +499,30 @@ function renderInfo(c, st, quelle) {
 
 /* Profilbild: Bilder/<Name der JSON>.jpg|jpeg|webp|png */
 let bildToken = 0;
-function bildLaden(quelle) {
+function bildLaden(quelle, explizit) {
   const img = $("portrait");
   const token = ++bildToken;
   img.classList.add("hidden");
   img.removeAttribute("src");
   let basis = String(quelle || "").replace(/^lokal:/, "").split(/[?#]/)[0].split("/").pop().replace(/\.[^.]+$/, "");
   try { basis = decodeURIComponent(basis); } catch (_) {}
-  if (!basis || /googleapis\.com/.test(String(quelle))) return;
-  const endungen = ["jpg", "jpeg", "webp", "png"];
+  const kandidaten = [];
+  if (typeof explizit === "string" && explizit.trim()) kandidaten.push(explizit.trim()); /* optional: "charakter": { "bild": "…" } */
+  if (basis && !/googleapis\.com/.test(String(quelle))) {
+    for (const e of ["jpg", "jpeg", "webp", "png", "JPG", "JPEG", "WEBP", "PNG"])
+      kandidaten.push(`Bilder/${encodeURIComponent(basis)}.${e}`);
+  }
   let i = 0;
   const versuch = () => {
-    if (token !== bildToken || i >= endungen.length) return;
-    img.src = `Bilder/${encodeURIComponent(basis)}.${endungen[i++]}`;
+    if (token !== bildToken) return;
+    if (i >= kandidaten.length) {
+      /* nichts gefunden: Hinweis an die Statuszeile unten anhängen */
+      const h = $("hint");
+      if (basis && !h.className.includes("error") && h.textContent)
+        h.textContent += ` · Kein Profilbild gefunden (Bilder/${basis}.jpg, .jpeg, .webp, .png)`;
+      return;
+    }
+    img.src = kandidaten[i++];
   };
   img.onload = () => { if (token === bildToken) img.classList.remove("hidden"); };
   img.onerror = versuch;
@@ -598,12 +620,36 @@ function renderSkills(f) {
   }
 }
 
+/* Einklappen: Zustand je Bereich im Browser merken */
+function zustandZu() {
+  try { return JSON.parse(localStorage.getItem("coc_zu")) || {}; } catch (_) { return {}; }
+}
+function machEinklappbar(sec, key, h2) {
+  sec.classList.toggle("collapsed", !!zustandZu()[key]);
+  h2.classList.add("toggle");
+  h2.tabIndex = 0;
+  h2.setAttribute("role", "button");
+  const umschalten = () => {
+    const zu = !sec.classList.contains("collapsed");
+    sec.classList.toggle("collapsed", zu);
+    const s = zustandZu();
+    if (zu) s[key] = true; else delete s[key];
+    try { localStorage.setItem("coc_zu", JSON.stringify(s)); } catch (_) {}
+  };
+  h2.addEventListener("click", umschalten);
+  h2.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); umschalten(); }
+  });
+}
+
 function renderTexts(t) {
   const box = $("texts");
   box.replaceChildren();
   for (const def of FREITEXTE) {
-    const sec = el("section");
-    sec.append(el("h2", null, def.label));
+    const sec = el("section", "coll");
+    const h = el("h2", null, def.label);
+    sec.append(h);
+    machEinklappbar(sec, def.key, h);
     const val = pick(t, def);
     const text = Array.isArray(val) ? val.join("\n") : val;
     if (text && String(text).trim()) sec.append(el("div", "free", text));
@@ -675,7 +721,7 @@ function render(data, quelle = "") {
   const name = pick(c, { key: "name" });
   if (name) document.title = `${name} – Call of Cthulhu`;
   renderInfo(c || {}, pick(data, { key: "status", alt: ["werte"] }) || {}, quelle);
-  bildLaden(quelle);
+  bildLaden(quelle, pick(c, { key: "bild", alt: ["image", "foto"] }));
   renderStats(pick(data, { key: "eigenschaften", alt: ["attribute"] }) || {});
   renderSkills(pick(data, { key: "fertigkeiten", alt: ["skills"] }) || {});
   renderTexts(pick(data, { key: "freitext", alt: ["texte"] }) || {});
@@ -812,6 +858,8 @@ $("filePick").addEventListener("change", (ev) => {
 
 /* Startquelle: ?json=…  >  ?id=… (Drive)  >  CONFIG.DRIVE_FILE_ID  >  CONFIG.DATEI */
 (function start() {
+  machEinklappbar($("logSec"), "wuerfe", $("logSec").querySelector("h2"));
+  machEinklappbar($("devSection"), "entwicklung", $("devSection").querySelector("h2"));
   logLaden();
   logZeichnen();
   const p = new URLSearchParams(location.search);
