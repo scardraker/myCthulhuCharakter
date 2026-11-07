@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Charakterbogen – Call of Cthulhu</title>
+<title>Charaktere – Call of Cthulhu</title>
 <style>
   :root {
     --bg: #14110f;
@@ -15,288 +15,58 @@
     --accent: #7fa37a;
     --accent-2: #b8863b;
     --danger: #c0594a;
-    --crit: #e0c050;
-    --extreme: #6fb7c9;
-    --hard: #7fa37a;
   }
   * { box-sizing: border-box; }
   body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 15px;
-    line-height: 1.35;
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Georgia, "Times New Roman", serif; font-size: 15px; line-height: 1.35;
   }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 10px 10px 24px; }
-  h1 {
-    font-size: .85rem; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--accent); text-align: center; margin: 0 0 10px; font-weight: normal;
+  .wrap { max-width: 640px; margin: 0 auto; padding: 14px 10px 32px; }
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; }
+  .head-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px;
+    padding-bottom: 3px; border-bottom: 1px solid var(--border); }
+  h2 { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); margin: 0; font-weight: normal; }
+  a { color: inherit; text-decoration: none; }
+  .btn {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px;
+    padding: 2px 10px; font-size: .8rem; color: var(--text);
   }
-  h2 {
-    font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--accent-2); margin: 0 0 6px; padding-bottom: 3px;
-    border-bottom: 1px solid var(--border); font-weight: normal;
-  }
-  section {
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;
-  }
-  .char-wrap { display: flex; gap: 10px; align-items: flex-start; }
-  /* 4 Spalten, je 2 Werte übereinander: Name/Spieler, Beruf/Alter, HP/Mana, Glück/Stabilität */
-  .info {
-    flex: 1 1 auto; min-width: 0; display: grid; gap: 6px 10px;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(2, auto); grid-auto-flow: column;
-  }
-  .info .label { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-  .info .value { font-size: 1rem; line-height: 1.2; overflow-wrap: anywhere; }
-  .status-row { display: flex; align-items: baseline; gap: 4px; }
-  .status-input {
-    width: 3.4rem; background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
-    border-radius: 4px; padding: 1px 4px; font: inherit; font-size: 1rem; text-align: center;
-  }
-  .status-input:focus { outline: none; border-color: var(--accent); }
-  .muted { color: var(--muted); }
-  .portrait {
-    flex: 0 0 auto; width: 90px; height: 120px; object-fit: cover; object-position: center top;
-    border: 1px solid var(--border); border-radius: 5px; background: var(--panel-2);
-  }
-  @media (max-width: 520px) {
-    .info { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-flow: row; }
-    .portrait { width: 64px; height: 86px; }
-  }
-
-  /* Würfelbereich */
-  #dice {
-    position: sticky; top: 0; z-index: 10;
-    border-color: var(--accent-2);
-    box-shadow: 0 4px 10px rgba(0,0,0,.5);
-    display: flex; align-items: center; gap: 12px; padding: 6px 10px;
-  }
-  .dice-number {
-    font-size: 1.8rem; line-height: 1; min-width: 3ch; text-align: center;
-    background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px;
-    font-variant-numeric: tabular-nums;
-  }
-  .dice-what { font-size: .78rem; color: var(--muted); line-height: 1.2; }
-  .dice-outcome { font-size: 1.1rem; line-height: 1.2; }
-  .out-crit    { color: var(--crit); }
-  .out-extreme { color: var(--extreme); }
-  .out-hard    { color: var(--hard); }
-  .out-ok      { color: var(--text); }
-  .out-fail    { color: var(--muted); }
-  .out-fumble  { color: var(--danger); }
-
-  /* Sortierung */
-  .sort { margin-left: auto; display: flex; gap: 0; }
-  .sort button {
-    background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
-    font: inherit; font-size: .72rem; padding: 3px 8px; cursor: pointer;
-  }
-  .sort button:first-child { border-radius: 5px 0 0 5px; }
-  .sort button:last-child { border-radius: 0 5px 5px 0; }
-  .sort button + button { border-left: 0; }
-  .sort button.active { color: var(--text); background: #362e24; border-color: var(--accent); }
-
-  /* Log (unter den Skills) */
-  .head-row { display: flex; justify-content: space-between; align-items: baseline; }
-  .head-row h2 { flex: 1; }
-  .small-btn {
-    background: none; color: var(--muted); border: 1px solid var(--border);
-    border-radius: 4px; font: inherit; font-size: .68rem; padding: 1px 7px; cursor: pointer;
-    margin-left: 8px;
-  }
-  .small-btn:hover { color: var(--text); border-color: var(--accent); }
-  #log { list-style: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto; font-size: .82rem; }
-  #log li {
-    display: grid; grid-template-columns: 3rem 1fr 2.4rem 8.5rem; gap: 6px;
-    padding: 1px 0; border-bottom: 1px dotted var(--border);
-  }
-  #log .t { color: var(--muted); font-variant-numeric: tabular-nums; }
-  #log .r { text-align: right; font-variant-numeric: tabular-nums; }
-  #log .o { text-align: right; }
-
-  /* Buttons für Werte */
-  .roll-btn {
-    font: inherit; color: var(--text); cursor: pointer;
-    background: var(--panel-2); border: 1px solid var(--border); border-radius: 5px;
-  }
-  .roll-btn:hover:not(:disabled) { border-color: var(--accent); background: #2d261e; }
-  .roll-btn:active:not(:disabled) { transform: translateY(1px); }
-  .roll-btn:disabled { opacity: .5; cursor: default; }
-
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 6px; }
-  .stat { padding: 4px 4px; text-align: center; min-width: 0; }
-  .stat .name {
-    display: block; font-size: .66rem; color: var(--muted);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .stat .main { display: block; font-size: 1.4rem; line-height: 1.15; }
-
-  .skill-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin-bottom: 8px; }
-  .skill-cols section { margin-bottom: 0; }
-  .skill-list { display: flex; flex-direction: column; gap: 3px; }
-  .skill {
-    display: flex; justify-content: space-between; gap: 8px; align-items: baseline;
-    width: 100%; text-align: left; padding: 3px 8px; font-size: .92rem;
-  }
-  .skill .val { font-variant-numeric: tabular-nums; }
-  .cat-primaer .skill { border-left: 3px solid var(--accent-2); }
-  .cat-sekundaer .skill { border-left: 3px solid var(--accent); }
-  .cat-standard .skill { border-left: 3px solid var(--muted); }
-  .skill-wrap .note { font-size: .72rem; color: var(--muted); font-style: italic; padding: 0 8px; line-height: 1.2; }
-  .empty { color: var(--muted); font-style: italic; font-size: .85rem; }
-
-  .text-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-  .text-grid section { margin-bottom: 0; }
-  .free { white-space: pre-wrap; word-wrap: break-word; font-size: .92rem; }
-
-  .adv { padding: 4px 0; border-bottom: 1px dotted var(--border); }
-  .adv:last-child { border-bottom: 0; }
-  .adv-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
-  .adv-title { font-size: .95rem; color: var(--accent-2); }
-  .adv-date { font-size: .72rem; color: var(--muted); }
-  .adv ul { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: .88rem; }
-  .adv-group { display: flex; gap: 8px; align-items: baseline; margin-top: 2px; }
-  .adv-label { font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); min-width: 3.4rem; }
-  .adv-group ul { margin: 0; }
-  .adv li .chg { color: var(--muted); font-variant-numeric: tabular-nums; margin-left: 4px; }
-  .adv li .n { color: var(--muted); font-style: italic; font-size: .75rem; margin-left: 4px; }
-
-  #status { text-align: center; color: var(--muted); padding: 24px 0; }
-  #status.error { color: var(--danger); }
-
-  /* Laden (unten) */
-  #loadSection { margin-top: 12px; }
-  #loader { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
-  #loader input[type=text] {
-    flex: 1 1 260px; background: var(--panel-2); color: var(--text);
-    border: 1px solid var(--border); border-radius: 5px; padding: 5px 8px;
-    font: inherit; font-size: .85rem;
-  }
-  #loader button, .filebtn {
-    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
-    border-radius: 5px; padding: 5px 12px; font: inherit; font-size: .85rem; cursor: pointer;
-  }
-  #loader button:hover, .filebtn:hover { border-color: var(--accent); }
-  .hint { font-size: .72rem; color: var(--muted); min-height: 1em; }
+  .btn:hover { border-color: var(--accent); }
+  .row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px dotted var(--border); }
+  .row:last-child { border-bottom: 0; }
+  .row .main { flex: 1 1 auto; min-width: 0; display: block; }
+  .row .main:hover .name { color: var(--accent); }
+  .name { display: block; font-size: 1.05rem; line-height: 1.2; }
+  .sub { display: block; font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+  .row .edit { flex: 0 0 auto; font-size: .75rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 1px 8px; }
+  .row .edit:hover { color: var(--text); border-color: var(--accent); }
+  .hint { font-size: .8rem; color: var(--muted); padding: 6px 0 2px; }
   .hint.error { color: var(--danger); }
-  .hidden { display: none; }
-
-  @media (max-width: 600px) {
-    #log li { grid-template-columns: 2.8rem 1fr 2.2rem 7rem; }
-  }
+  code { background: var(--panel-2); padding: 0 4px; border-radius: 3px; font-size: .85em; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div id="status">Lade Charakter …</div>
-
-  <div id="sheet" class="hidden">
-    <section>
-      <h2>Charakter</h2>
-      <div class="char-wrap">
-        <div class="info" id="info"></div>
-        <img id="portrait" class="portrait hidden" alt="Profilbild">
-      </div>
-    </section>
-
-    <section id="dice">
-      <div class="dice-number" id="diceNumber">–</div>
-      <div>
-        <div class="dice-what" id="diceWhat">W100 – Wert anklicken</div>
-        <div class="dice-outcome" id="diceOutcome"></div>
-      </div>
-      <div class="sort" id="sort" title="Sortierung">
-        <button type="button" data-mode="json">JSON</button>
-        <button type="button" data-mode="name">A–Z</button>
-        <button type="button" data-mode="wert">Wert</button>
-      </div>
-    </section>
-
-    <section>
-      <h2>Grundeigenschaften</h2>
-      <div class="stats" id="stats"></div>
-    </section>
-
-    <div class="skill-cols" id="skills"></div>
-
-    <section>
-      <div class="head-row">
-        <h2>Letzte Würfe</h2>
-        <button type="button" class="small-btn" id="logClear">Leeren</button>
-      </div>
-      <ul id="log"></ul>
-    </section>
-
-    <div class="text-grid" id="texts"></div>
-
-    <section id="devSection" style="margin-top:8px">
-      <h2>Entwicklung</h2>
-      <div id="dev"></div>
-    </section>
-  </div>
-
-  <section id="loadSection">
-    <h2>Charakter laden</h2>
-    <form id="loader" autocomplete="off">
-      <input type="text" id="quelle" placeholder="URL oder Pfad zur JSON, z. B. https://…/charakter.json oder charaktere/edmund.json" spellcheck="false">
-      <button type="submit">Laden</button>
-      <label class="filebtn">Lokale Datei …
-        <input type="file" id="filePick" accept=".json,application/json" hidden>
-      </label>
-    </form>
-    <div id="hint" class="hint"></div>
+  <section>
+    <div class="head-row">
+      <h2>Charaktere</h2>
+      <a class="btn" href="editor.html">Editor</a>
+    </div>
+    <div id="list"></div>
+    <div id="hint" class="hint">Lade Liste …</div>
   </section>
 </div>
 
 <script>
-/* ================================================================
-   KONFIGURATION
-   ----------------------------------------------------------------
-   Variante A (Standard): JSON liegt im selben Ordner wie diese Seite
-                          -> DATEI = "charakter.json"
-   Variante B (Google Drive): JSON liegt auf Google Drive, öffentlich
-                          freigegeben ("Jeder mit dem Link").
-                          -> DRIVE_FILE_ID und DRIVE_API_KEY eintragen
-   Auch per URL möglich:  index.html?id=DATEI_ID&key=API_KEY
-                          index.html?json=andere-datei.json
-   ================================================================ */
-const CONFIG = {
-  DATEI: "charakter.json",
-  DRIVE_FILE_ID: "",
-  DRIVE_API_KEY: "",
-  LOG_MAX: 20,
-  LOG_KEY: "coc_wurf_log"
-};
+/* Charakterdateien liegen im Ordner „charakter“. Die Seite liest nur die Liste
+   charakter/liste.json (Array mit Dateinamen). Erzeugt wird sie lokal mit
+   „node liste_erzeugen.js“. */
+const ORDNER = "charakter";
+const BOGEN = "bogen.html";
+const EDITOR = "editor.html";
+const MANIFEST = "liste.json";
 
-const EIGENSCHAFTEN = [
-  { key: "staerke",          label: "Stärke",           alt: ["stärke", "str"] },
-  { key: "geschicklichkeit", label: "Geschicklichkeit", alt: ["dex", "ges"] },
-  { key: "konstitution",     label: "Konstitution",     alt: ["con", "kon"] },
-  { key: "charisma",         label: "Charisma",         alt: ["app"] },
-  { key: "bildung",          label: "Bildung",          alt: ["edu"] },
-  { key: "intelligenz",      label: "Intelligenz",      alt: ["int"] },
-  { key: "magie",            label: "Magie",            alt: ["pow", "mp"] }
-];
-
-const KATEGORIEN = [
-  { key: "primaer",   label: "Primär",   alt: ["primär", "primary"] },
-  { key: "sekundaer", label: "Sekundär", alt: ["sekundär", "secondary"] },
-  { key: "standard",  label: "Standard", alt: ["default"] }
-];
-
-const FREITEXTE = [
-  { key: "inventar",               label: "Inventar" },
-  { key: "besitz",                 label: "Besitz" },
-  { key: "magie",                  label: "Magie" },
-  { key: "charaktereigenschaften", label: "Charaktereigenschaften", alt: ["eigenschaften"] }
-];
-
-/* ---------- Hilfsfunktionen ---------- */
 const $ = (id) => document.getElementById(id);
-
 function el(tag, cls, text) {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
@@ -304,520 +74,59 @@ function el(tag, cls, text) {
   return e;
 }
 
-function pick(obj, def) {
-  if (!obj || typeof obj !== "object") return undefined;
-  const keys = [def.key, ...(def.alt || [])];
-  for (const k of keys) {
-    if (k in obj) return obj[k];
-    const hit = Object.keys(obj).find(o => o.toLowerCase() === k.toLowerCase());
-    if (hit) return obj[hit];
-  }
-  return undefined;
-}
-
-function num(v) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
-
-function showError(msg) {
-  const s = $("status");
-  s.className = "error";
-  s.textContent = msg;
-  s.classList.remove("hidden");
-  $("sheet").classList.add("hidden");
-}
-
-function setHint(msg, isError) {
-  const h = $("hint");
-  h.textContent = msg || "";
-  h.className = "hint" + (isError ? " error" : "");
-}
-
-/* ---------- Würfeln ---------- */
-function w100() {
-  /* Gleichverteilt 1–100 ohne Modulo-Verzerrung */
-  const buf = new Uint32Array(1);
-  const limit = Math.floor(0x100000000 / 100) * 100;
-  do { crypto.getRandomValues(buf); } while (buf[0] >= limit);
-  return (buf[0] % 100) + 1;
-}
-
-function bewerte(wurf, wert) {
-  const patzerAb = wert < 50 ? 96 : 100;
-  if (wurf === 1)                         return { text: "Kritischer Erfolg", cls: "out-crit" };
-  if (wurf >= patzerAb)                   return { text: "Patzer",            cls: "out-fumble" };
-  if (wurf <= Math.floor(wert / 5))       return { text: "Extremer Erfolg",   cls: "out-extreme" };
-  if (wurf <= Math.floor(wert / 2))       return { text: "Schwerer Erfolg",   cls: "out-hard" };
-  if (wurf <= wert)                       return { text: "Erfolg",            cls: "out-ok" };
-  return { text: "Misserfolg", cls: "out-fail" };
-}
-
-let logEintraege = [];
-
-function logLaden() {
+async function ausManifest() {
   try {
-    const raw = localStorage.getItem(CONFIG.LOG_KEY);
-    const arr = raw ? JSON.parse(raw) : [];
-    logEintraege = Array.isArray(arr) ? arr.slice(0, CONFIG.LOG_MAX) : [];
-  } catch (_) { logEintraege = []; }
+    const r = await fetch(`${ORDNER}/${MANIFEST}`, { cache: "no-store" });
+    if (!r.ok) return [];
+    const a = await r.json();
+    return (Array.isArray(a) ? a : []).map(x => typeof x === "string" ? x : x && x.datei).filter(Boolean);
+  } catch (_) { return []; }
 }
 
-function logSpeichern() {
-  try { localStorage.setItem(CONFIG.LOG_KEY, JSON.stringify(logEintraege)); } catch (_) {}
+async function kurzinfo(datei) {
+  const fallback = { datei, name: datei.replace(/\.json$/i, ""), spieler: "", beruf: "" };
+  try {
+    const r = await fetch(`${ORDNER}/${encodeURIComponent(datei)}`, { cache: "no-store" });
+    if (!r.ok) return fallback;
+    const j = await r.json();
+    const c = (j && (j.charakter || j.character)) || {};
+    return { datei, name: c.name || fallback.name, spieler: c.spieler || "", beruf: c.beruf || "" };
+  } catch (_) { return fallback; }
 }
 
-function logZeichnen() {
-  const ul = $("log");
-  ul.replaceChildren();
-  if (!logEintraege.length) {
-    const li = el("li", null, "Noch keine Würfe.");
-    li.style.display = "block";
-    li.style.color = "var(--muted)";
-    ul.append(li);
+function zeile(c) {
+  const pfad = `${ORDNER}/${c.datei}`;
+  const row = el("div", "row");
+  const main = el("a", "main");
+  main.href = `${BOGEN}?json=${encodeURIComponent(pfad)}`;
+  main.append(el("span", "name", c.name));
+  const sub = [c.spieler, c.beruf].filter(Boolean).join(" · ");
+  if (sub) main.append(el("span", "sub", sub));
+  const edit = el("a", "edit", "Bearbeiten");
+  edit.href = `${EDITOR}?json=${encodeURIComponent(pfad)}`;
+  row.append(main, edit);
+  return row;
+}
+
+(async function start() {
+  const alle = (await ausManifest())
+    .map(n => String(n).replace(/^\.?\/?charakter\//i, ""))
+    .filter(n => /\.json$/i.test(n) && n.toLowerCase() !== MANIFEST);
+  const namen = [...new Set(alle)];
+  const liste = $("list");
+  const hint = $("hint");
+
+  if (!namen.length) {
+    hint.className = "hint error";
+    hint.textContent = "Keine Charaktere gefunden. Die Liste „" + ORDNER + "/" + MANIFEST +
+      "“ fehlt oder ist leer – lokal mit „node liste_erzeugen.js“ erzeugen und hochladen.";
     return;
   }
-  for (const e of logEintraege) {
-    const li = el("li");
-    const zeit = new Date(e.zeit).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-    li.append(
-      el("span", "t", zeit),
-      el("span", null, `${e.name} (${e.wert})`),
-      el("span", "r", e.wurf),
-      el("span", "o " + e.cls, e.text)
-    );
-    ul.append(li);
-  }
-}
 
-function wuerfeln(name, wert) {
-  const wurf = w100();
-  const res = bewerte(wurf, wert);
-  $("diceNumber").textContent = wurf;
-  $("diceWhat").textContent = `${name} (${wert})`;
-  const o = $("diceOutcome");
-  o.textContent = res.text;
-  o.className = "dice-outcome " + res.cls;
-
-  logEintraege.unshift({ zeit: Date.now(), name, wert, wurf, text: res.text, cls: res.cls });
-  logEintraege = logEintraege.slice(0, CONFIG.LOG_MAX);
-  logSpeichern();
-  logZeichnen();
-}
-
-$("logClear").addEventListener("click", () => {
-  logEintraege = [];
-  logSpeichern();
-  logZeichnen();
-});
-
-/* ---------- Rendering ---------- */
-/* Status-Werte: JSON liefert HP/Mana als Maximum bzw. Glück/Stabilität als Startwert,
-   der aktuelle Wert ist editierbar und wird pro Charakter im Browser gemerkt. */
-const STATUS = [
-  { key: "hp",          label: "HP",         alt: ["trefferpunkte", "tp"],        max: true },
-  { key: "mana",        label: "Mana",       alt: ["magiepunkte", "mp"],          max: true },
-  { key: "glueck",      label: "Glück",      alt: ["glück", "gluck", "luck"],     max: false },
-  { key: "stabilitaet", label: "Stabilität", alt: ["stabilität", "san", "sanity"], max: false }
-];
-
-function statusLaden(key) {
-  try { return JSON.parse(localStorage.getItem(key)); } catch (_) { return null; }
-}
-
-function renderInfo(c, st, quelle) {
-  const box = $("info");
-  box.replaceChildren();
-  const felder = [
-    ["Name", pick(c, { key: "name" })],
-    ["Spieler", pick(c, { key: "spieler" })],
-    ["Beruf", pick(c, { key: "beruf" })],
-    ["Alter", pick(c, { key: "alter", alt: ["age"] })]
-  ];
-  for (const [label, val] of felder) {
-    const d = el("div");
-    d.append(el("div", "label", label), el("div", "value", val ?? "–"));
-    box.append(d);
-  }
-
-  const basis = {};
-  for (const d of STATUS) {
-    const raw = pick(st, d);
-    const v = raw === undefined || raw === null || raw === "" ? null : num(raw);
-    if (v !== null) basis[d.key] = v;
-  }
-  const speicherKey = "coc_status:" + quelle;
-  let saved = statusLaden(speicherKey);
-  /* Hat sich die JSON geändert, gelten wieder deren Werte */
-  if (!saved || JSON.stringify(saved.basis) !== JSON.stringify(basis)) saved = { basis, cur: {} };
-  const cur = saved.cur || (saved.cur = {});
-  const sichern = () => { try { localStorage.setItem(speicherKey, JSON.stringify(saved)); } catch (_) {} };
-
-  for (const d of STATUS) {
-    const cell = el("div");
-    cell.append(el("div", "label", d.label));
-    const base = basis[d.key];
-    if (base === undefined) {
-      cell.append(el("div", "value", "–"));
-      box.append(cell);
-      continue;
-    }
-    const max = d.max ? base : 99;
-    const inp = el("input", "status-input");
-    inp.type = "number";
-    inp.inputMode = "numeric";
-    inp.min = 0;
-    inp.max = max;
-    inp.value = Math.min(max, Math.max(0, num(cur[d.key] ?? base) ?? base));
-    inp.title = d.label + (d.max ? " (aktuell / Maximum)" : "");
-    inp.addEventListener("change", () => {
-      let v = Math.round(Number(inp.value));
-      if (inp.value === "" || !Number.isFinite(v)) v = base;
-      v = Math.max(0, Math.min(max, v));
-      inp.value = v;
-      cur[d.key] = v;
-      sichern();
-    });
-    const row = el("div", "value status-row");
-    row.append(inp);
-    if (d.max) row.append(el("span", "muted", "/ " + base));
-    cell.append(row);
-    box.append(cell);
-  }
-}
-
-/* Profilbild: Bilder/<Name der JSON>.jpg|jpeg|webp|png */
-let bildToken = 0;
-function bildLaden(quelle) {
-  const img = $("portrait");
-  const token = ++bildToken;
-  img.classList.add("hidden");
-  img.removeAttribute("src");
-  let basis = String(quelle || "").replace(/^lokal:/, "").split(/[?#]/)[0].split("/").pop().replace(/\.[^.]+$/, "");
-  try { basis = decodeURIComponent(basis); } catch (_) {}
-  if (!basis || /googleapis\.com/.test(String(quelle))) return;
-  const endungen = ["jpg", "jpeg", "webp", "png"];
-  let i = 0;
-  const versuch = () => {
-    if (token !== bildToken || i >= endungen.length) return;
-    img.src = `Bilder/${encodeURIComponent(basis)}.${endungen[i++]}`;
-  };
-  img.onload = () => { if (token === bildToken) img.classList.remove("hidden"); };
-  img.onerror = versuch;
-  versuch();
-}
-
-/* ---------- Sortierung ---------- */
-let sortMode = "json";
-let aktuelleDaten = null;
-try {
-  const m = localStorage.getItem("coc_sort");
-  if (["json", "name", "wert"].includes(m)) sortMode = m;
-} catch (_) {}
-
-/* Sortiert eine Kopie; getName/getWert liefern die Felder je Eintrag */
-function sortiere(arr, getName, getWert) {
-  const kopie = arr.slice();
-  if (sortMode === "name") {
-    kopie.sort((a, b) => String(getName(a)).localeCompare(String(getName(b)), "de", { sensitivity: "base" }));
-  } else if (sortMode === "wert") {
-    kopie.sort((a, b) =>
-      (getWert(b) ?? -Infinity) - (getWert(a) ?? -Infinity) ||
-      String(getName(a)).localeCompare(String(getName(b)), "de", { sensitivity: "base" }));
-  }
-  return kopie;
-}
-
-function sortButtonsMarkieren() {
-  for (const b of $("sort").children) b.classList.toggle("active", b.dataset.mode === sortMode);
-}
-
-$("sort").addEventListener("click", (ev) => {
-  const mode = ev.target.dataset && ev.target.dataset.mode;
-  if (!mode || mode === sortMode) return;
-  sortMode = mode;
-  try { localStorage.setItem("coc_sort", mode); } catch (_) {}
-  sortButtonsMarkieren();
-  if (aktuelleDaten) {
-    renderSkills(pick(aktuelleDaten, { key: "fertigkeiten", alt: ["skills"] }) || {});
-  }
-});
-sortButtonsMarkieren();
-
-function renderStats(e) {
-  const box = $("stats");
-  box.replaceChildren();
-  for (const def of EIGENSCHAFTEN) {
-    const v = num(pick(e, def));
-    const b = el("button", "roll-btn stat");
-    b.type = "button";
-    b.title = def.label;
-    b.append(el("span", "name", def.label), el("span", "main", v ?? "–"));
-    if (v === null) b.disabled = true;
-    else b.addEventListener("click", () => wuerfeln(def.label, v));
-    box.append(b);
-  }
-}
-
-function renderSkills(f) {
-  const box = $("skills");
-  box.replaceChildren();
-  for (const kat of KATEGORIEN) {
-    const sec = el("section", "cat-" + kat.key);
-    sec.append(el("h2", null, kat.label));
-    let liste = pick(f, kat);
-
-    /* Erlaubt auch { "Okkultismus": 60 } statt [{name, wert}] */
-    if (liste && !Array.isArray(liste) && typeof liste === "object") {
-      liste = Object.entries(liste).map(([name, wert]) =>
-        (wert && typeof wert === "object") ? { name, ...wert } : { name, wert });
-    }
-
-    if (!Array.isArray(liste) || liste.length === 0) {
-      sec.append(el("div", "empty", "Keine Fertigkeiten"));
-    } else {
-      const list = el("div", "skill-list");
-      const sortiert = sortiere(liste, s => s.name ?? "?", s => num(s.wert ?? s.value));
-      for (const s of sortiert) {
-        const name = s.name ?? "?";
-        const wert = num(s.wert ?? s.value);
-        const wrap = el("div", "skill-wrap");
-        const b = el("button", "roll-btn skill");
-        b.type = "button";
-        b.append(el("span", null, name), el("span", "val", wert ?? "–"));
-        if (wert === null) b.disabled = true;
-        else b.addEventListener("click", () => wuerfeln(name, wert));
-        wrap.append(b);
-        const notiz = s.notiz ?? s.note;
-        if (notiz) wrap.append(el("div", "note", notiz));
-        list.append(wrap);
-      }
-      sec.append(list);
-    }
-    box.append(sec);
-  }
-}
-
-function renderTexts(t) {
-  const box = $("texts");
-  box.replaceChildren();
-  for (const def of FREITEXTE) {
-    const sec = el("section");
-    sec.append(el("h2", null, def.label));
-    const val = pick(t, def);
-    const text = Array.isArray(val) ? val.join("\n") : val;
-    if (text && String(text).trim()) sec.append(el("div", "free", text));
-    else sec.append(el("div", "empty", "–"));
-    box.append(sec);
-  }
-}
-
-function renderDev(liste) {
-  const box = $("dev");
-  box.replaceChildren();
-  if (!Array.isArray(liste) || liste.length === 0) {
-    box.append(el("div", "empty", "Noch keine Einträge."));
-    return;
-  }
-  for (const a of liste) {
-    const adv = el("div", "adv");
-    const head = el("div", "adv-head");
-    head.append(el("span", "adv-title", a.abenteuer ?? a.name ?? a.titel ?? "Abenteuer"));
-    if (a.datum ?? a.date) head.append(el("span", "adv-date", a.datum ?? a.date));
-    adv.append(head);
-
-    const items = a.verbesserungen ?? a.skills ?? a.fertigkeiten ?? [];
-    if (Array.isArray(items) && items.length) {
-      const ul = el("ul");
-      for (const it of items) {
-        const li = el("li");
-        if (typeof it === "string") {
-          li.textContent = it;
-        } else {
-          li.append(document.createTextNode(it.name ?? "?"));
-          const von = num(it.von ?? it.alt), auf = num(it.auf ?? it.neu);
-          if (von !== null && auf !== null) li.append(el("span", "chg", `${von} → ${auf}`));
-          else if (auf !== null) li.append(el("span", "chg", `→ ${auf}`));
-          if (it.notiz ?? it.note) li.append(el("span", "n", it.notiz ?? it.note));
-        }
-        ul.append(li);
-      }
-      adv.append(ul);
-    }
-
-    const gruppen = [["Zauber", a.zauber ?? a.spells], ["Besitz", a.besitz ?? a.items]];
-    for (const [label, roh] of gruppen) {
-      const eintraege = typeof roh === "string" ? [roh] : roh;
-      if (!Array.isArray(eintraege) || !eintraege.length) continue;
-      const row = el("div", "adv-group");
-      row.append(el("span", "adv-label", label));
-      const ul2 = el("ul");
-      for (const it of eintraege) {
-        const li = el("li");
-        if (typeof it === "string") li.textContent = it;
-        else {
-          li.append(document.createTextNode(it.name ?? "?"));
-          if (it.notiz ?? it.note) li.append(el("span", "n", it.notiz ?? it.note));
-        }
-        ul2.append(li);
-      }
-      row.append(ul2);
-      adv.append(row);
-    }
-    box.append(adv);
-  }
-}
-
-function render(data, quelle = "") {
-  aktuelleDaten = data;
-  renderDev(pick(data, { key: "entwicklung", alt: ["development", "fortschritt"] }));
-  const c = pick(data, { key: "charakter", alt: ["character"] });
-  const name = pick(c, { key: "name" });
-  if (name) document.title = `${name} – Call of Cthulhu`;
-  renderInfo(c || {}, pick(data, { key: "status", alt: ["werte"] }) || {}, quelle);
-  bildLaden(quelle);
-  renderStats(pick(data, { key: "eigenschaften", alt: ["attribute"] }) || {});
-  renderSkills(pick(data, { key: "fertigkeiten", alt: ["skills"] }) || {});
-  renderTexts(pick(data, { key: "freitext", alt: ["texte"] }) || {});
-  $("status").classList.add("hidden");
-  $("sheet").classList.remove("hidden");
-}
-
-/* ---------- Laden ---------- */
-function driveApiUrl(id) {
-  const key = new URLSearchParams(location.search).get("key") || CONFIG.DRIVE_API_KEY;
-  if (!key) return null;
-  return `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media&key=${encodeURIComponent(key)}`;
-}
-
-/* Wandelt die Eingabe (URL, relativer Pfad, Drive-Link, lokaler Pfad)
-   in eine abrufbare URL um. Gibt { url } oder { fehler } zurück. */
-function quelleAufloesen(eingabe) {
-  const s = (eingabe || "").trim();
-  if (!s) return { fehler: "Bitte eine URL oder einen Pfad angeben." };
-
-  /* Reine Drive-ID (ohne Schrägstriche/Punkte) */
-  if (/^[\w-]{20,}$/.test(s)) {
-    const u = driveApiUrl(s);
-    return u ? { url: u } : { fehler: "Für Google-Drive-Dateien wird ein API-Key benötigt (CONFIG.DRIVE_API_KEY oder ?key=…)." };
-  }
-
-  /* Google-Drive-Freigabelink */
-  const m = s.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([\w-]+)/);
-  if (m) {
-    const u = driveApiUrl(m[1]);
-    return u ? { url: u } : { fehler: "Für Google-Drive-Links wird ein API-Key benötigt (CONFIG.DRIVE_API_KEY oder ?key=…)." };
-  }
-
-  /* Dropbox-Freigabelink -> Direktlink (dl.dropboxusercontent.com) */
-  if (/^https?:\/\/(www\.)?dropbox\.com\//i.test(s)) {
-    try {
-      const u = new URL(s);
-      u.hostname = "dl.dropboxusercontent.com";
-      u.searchParams.delete("dl");
-      u.searchParams.delete("raw");
-      return { url: u.toString() };
-    } catch (_) {
-      return { fehler: "Der Dropbox-Link ist ungültig." };
-    }
-  }
-
-  /* Absolute lokale Pfade (C:\..., \\server\..., file://, ~/...) */
-  const istLokalAbsolut = /^[a-zA-Z]:[\\/]/.test(s) || s.startsWith("\\\\") ||
-                          /^file:/i.test(s) || /^~[\\/]/.test(s);
-  if (istLokalAbsolut && location.protocol !== "file:") {
-    return { fehler: "Browser dürfen aus Sicherheitsgründen keine absoluten lokalen Pfade von einer Webseite lesen. Nutze „Lokale Datei …“ oder gib einen Pfad relativ zur Seite bzw. eine URL an." };
-  }
-
-  /* http(s)-URL, relativer Pfad oder (bei file://) lokaler Pfad */
-  return { url: s.replace(/\\/g, "/") };
-}
-
-/* Relative Pfade werden zuerst wie angegeben, dann im Unterordner „charakter“ gesucht */
-const UNTERORDNER = "charakter";
-function kandidaten(url) {
-  if (/^[a-z][a-z0-9+.-]*:/i.test(url) || url.startsWith("/")) return [url];
-  const rel = url.replace(/^\.\//, "");
-  if (rel.startsWith(UNTERORDNER + "/")) return [rel];
-  return [url, UNTERORDNER + "/" + rel];
-}
-
-async function laden(eingabe, aufUrlSchreiben = true) {
-  const r = quelleAufloesen(eingabe);
-  if (r.fehler) { setHint(r.fehler, true); return; }
-
-  setHint("Lade …");
-  $("status").className = "";
-  $("status").textContent = "Lade Charakter …";
-  $("status").classList.remove("hidden");
-  $("sheet").classList.add("hidden");
-
-  try {
-    let data, gefunden, ersterFehler;
-    for (const url of kandidaten(r.url)) {
-      let res;
-      try {
-        res = await fetch(url, { cache: "no-store" });
-      } catch (e) {
-        ersterFehler = ersterFehler || e;
-        continue;
-      }
-      if (!res.ok) {
-        ersterFehler = ersterFehler || new Error(`HTTP ${res.status}`);
-        continue;
-      }
-      data = await res.json(); /* Datei gefunden, aber kein gültiges JSON -> Fehler */
-      gefunden = url;
-      break;
-    }
-    if (gefunden === undefined) throw ersterFehler || new Error("nicht gefunden");
-    render(data, gefunden);
-    setHint("Geladen: " + gefunden);
-    if (aufUrlSchreiben) {
-      const p = new URLSearchParams(location.search);
-      p.set("json", eingabe.trim());
-      p.delete("id");
-      try { history.replaceState(null, "", "?" + p.toString()); } catch (_) {}
-    }
-  } catch (err) {
-    let msg = `Die Charakterdatei konnte nicht geladen werden (${err.message}).`;
-    if (location.protocol === "file:") {
-      msg += " Beim Öffnen per file:// blockieren Browser meist das Laden anderer Dateien – nutze „Lokale Datei …“ oder einen lokalen Webserver.";
-    } else if (err instanceof TypeError) {
-      msg += " Vermutlich blockiert der Server den Zugriff (CORS) oder die URL ist falsch.";
-    }
-    showError(msg);
-    setHint("", false);
-  }
-}
-
-$("loader").addEventListener("submit", (ev) => {
-  ev.preventDefault();
-  laden($("quelle").value);
-});
-
-$("filePick").addEventListener("change", (ev) => {
-  const file = ev.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      render(JSON.parse(reader.result), "lokal:" + file.name);
-      setHint("Geladen (lokale Datei): " + file.name);
-    } catch (e) { showError("Die Datei ist kein gültiges JSON: " + e.message); }
-  };
-  reader.readAsText(file);
-  ev.target.value = "";
-});
-
-/* Startquelle: ?json=…  >  ?id=… (Drive)  >  CONFIG.DRIVE_FILE_ID  >  CONFIG.DATEI */
-(function start() {
-  logLaden();
-  logZeichnen();
-  const p = new URLSearchParams(location.search);
-  const quelle = p.get("json") || p.get("id") || CONFIG.DRIVE_FILE_ID || CONFIG.DATEI;
-  $("quelle").value = quelle;
-  laden(quelle, false);
+  const infos = await Promise.all(namen.map(kurzinfo));
+  infos.sort((a, b) => a.name.localeCompare(b.name, "de", { sensitivity: "base" }));
+  liste.replaceChildren(...infos.map(zeile));
+  hint.textContent = infos.length === 1 ? "1 Charakter" : infos.length + " Charaktere";
 })();
 </script>
 </body>
